@@ -9,14 +9,16 @@
     "pick": {
       "type": ["object", "null"],
       "additionalProperties": false,
-      "required": ["title", "year", "why", "genres", "art_url", "art_external"],
+      "required": ["title", "year", "why", "genres", "tmdb", "art_url", "art_external", "art_local"],
       "properties": {
         "title": { "type": "string" },
         "year": { "type": ["integer", "string", "null"] },
         "why": { "type": "string", "description": "The seed film that produced this pick ('because you loved X'). Empty = no seed known; the UI must not invent a reason." },
         "genres": { "type": "string" },
+        "tmdb": { "type": ["integer", "null"], "description": "null when the recs-pool record could not be matched back to this pick by title - then no art is published either, rather than art for the wrong film." },
         "art_url": { "type": "string" },
-        "art_external": { "type": "boolean" }
+        "art_external": { "type": "boolean" },
+        "art_local": { "type": ["string", "null"], "description": "Same-origin cached backdrop path (/art/<tmdb>.jpg) or null. The v2 app may ONLY use this one; art_url is cross-origin and forbidden by CSP." }
       }
     },
     "idx": { "type": "integer", "minimum": 0 },

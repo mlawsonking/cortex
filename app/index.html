@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Cortex &middot; Media Brain</title>
+    <!-- dashboard-server.py substitutes the live HMAC nonce into any .html it serves. Same mechanism the legacy
+         page uses; the raw /act secret never reaches the browser. -->
+    <meta name="act-nonce" content="__ACT_NONCE__" />
+    <meta name="theme-color" content="#0a0e14" />
+    <link rel="manifest" href="/v2/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

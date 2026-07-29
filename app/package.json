@@ -1,0 +1,16 @@
+{
+  "name": "cortex-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Cortex - the media-server brain app. Static Svelte bundle served by the existing dashboard-server.py on :8500. Node/npm are BUILD-TIME ONLY: never a service, never a listener.",
+  "scripts": {
+    "build": "vite build",
+    "preview-note": "There is deliberately no dev-server script. Nothing in this repo may open a port; build and let dashboard-server.py serve the output."
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "7.2.0",
+    "svelte": "5.56.8",
+    "vite": "8.1.5"
+  }
+}

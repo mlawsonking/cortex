@@ -9,13 +9,16 @@
 # try/except AFTER the atomic page writes, and every contract here is written in its own try/except so one bad
 # contract cannot take the other nineteen (or the page) down with it. Failures are recorded honestly in
 # data\_emit-status.json instead of being swallowed silently.
-import os, sys, time, json
+import os, sys, time, json, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import brain_contracts as bc
 import wrap_files
 
 WG = r"C:\Users\bobdo\wg"
+# Backdrop cache INSIDE the served dashboard dir, so the app loads art same-origin. .jpg is already on
+# dashboard-server.py's serve allow-list, so this needs no new route. Bounded by the recs pool size (~30 files).
+ART_DIR = os.path.join(WG, "dashboard", "art")
 
 # gen-dashboard writes these glyphs into its tuples; map them back to semantic kinds so the UI owns its own icons.
 CAL_KIND = {"\U0001F4FA": "episode", "\U0001F3AC": "movie"}
@@ -213,24 +216,74 @@ def _emit_smart(d):
                       generated_at_ts=bc.mtime(os.path.join(WG, "dashboard", "smart.json")))
 
 
+def _cache_art(tmdb, url):
+    """Fetch the TMDB backdrop ONCE into the served dashboard dir and return its same-origin path (or None).
+
+    The legacy page embeds the TMDB URL directly, which is an external request. The v2 bundle runs under a strict
+    CSP (default-src 'self') and must make none, so the producer - which is server-side and already talks to TMDB
+    for this exact URL - does the fetching instead. Verified to be a real JPEG before it is published.
+    """
+    if not tmdb or not url.startswith("https://image.tmdb.org/"):
+        return None
+    try:
+        fn = "%d.jpg" % int(tmdb)
+    except Exception:
+        return None
+    path = os.path.join(ART_DIR, fn)
+    rel = "/art/" + fn
+    try:
+        if os.path.isfile(path) and os.path.getsize(path) > 1024:
+            return rel
+    except Exception:
+        pass
+    try:
+        os.makedirs(ART_DIR, exist_ok=True)
+        req = urllib.request.Request(url, headers={"User-Agent": "cortex-art-cache"})
+        with urllib.request.urlopen(req, timeout=10) as r:
+            blob = r.read(4 * 1024 * 1024)
+        if len(blob) < 1024 or blob[:2] != b"\xff\xd8":       # JPEG magic - never publish a 404 page as art
+            return None
+        tmp = path + ".tmp"
+        with open(tmp, "wb") as fh:
+            fh.write(blob)
+        os.replace(tmp, path)
+        return rel
+    except Exception:
+        return None
+
+
 def _emit_tonight(d):
-    tn = d.get("tonight")
-    pick = None
-    if tn:
-        art = _s(tn.get("art"))
-        pick = {"title": _s(tn.get("title")), "year": tn.get("year") if isinstance(tn.get("year"), int) else _s(tn.get("year")),
-                "why": _s(tn.get("why")), "genres": _s(tn.get("genres")),
-                "art_url": art, "art_external": art.startswith("http")}
     idx = 0
     pool = 0
     try:
         idx = int((bc.read_json(os.path.join(WG, "audit", "tonight-pick.json")) or {}).get("idx", 0))
     except Exception:
         idx = 0
+    idx = max(0, idx)
     recs = bc.read_json(os.path.join(WG, "audit", "personal-recs.json"))
-    if isinstance(recs, list):
+    rec = None
+    if isinstance(recs, list) and recs:
         pool = len(recs)
-    bc.write_contract("tonight-pick", {"pick": pick, "idx": max(0, idx), "pool": pool})
+        # Same resolution gen-dashboard.gather_tonight uses (idx % len), so we can recover the tmdb id it dropped
+        # from its render tuple. Cross-checked on title below rather than assumed.
+        cand = recs[idx % pool]
+        if isinstance(cand, dict):
+            rec = cand
+    tn = d.get("tonight")
+    pick = None
+    if tn:
+        art = _s(tn.get("art"))
+        tmdb = None
+        if rec is not None and _s(rec.get("title")) == _s(tn.get("title")):
+            tmdb = rec.get("tmdb") if isinstance(rec.get("tmdb"), int) else None
+        pick = {"title": _s(tn.get("title")),
+                "year": tn.get("year") if isinstance(tn.get("year"), int) else _s(tn.get("year")),
+                "why": _s(tn.get("why")), "genres": _s(tn.get("genres")),
+                "tmdb": tmdb,
+                "art_url": art,
+                "art_external": art.startswith("http"),
+                "art_local": _cache_art(tmdb, art)}
+    bc.write_contract("tonight-pick", {"pick": pick, "idx": idx, "pool": pool})
 
 
 def _emit_taste(d):

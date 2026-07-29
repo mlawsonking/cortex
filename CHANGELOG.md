@@ -2,6 +2,64 @@
 
 Semver on the app; each contract is versioned independently in `contracts\registry.json`.
 
+## [P1] 2026-07-29 - Foundation + first light (`/v2/`) - awaiting GATE M1
+
+**Added**
+* `app\` - Svelte 5 + Vite static bundle. **3 direct deps, exact pins** (`svelte` 5.56.8, `vite` 8.1.5,
+  `@sveltejs/vite-plugin-svelte` 7.2.0), 39 packages total, lockfile committed, `npm ci --ignore-scripts` only.
+  Output: **19.2 kB gzip JS + 2.0 kB gzip CSS** (budget was <=200 kB gz). No chart library - the sparkline/bar
+  work is hand-rolled SVG/CSS, keeping the budget at 3 of 5.
+* `app\src\styles.css` - the design system: tokens for the existing palette (so it reads as the same product),
+  systematised spacing/type scale, card + badge + bar + hero primitives, and an explicit phone block.
+* `app\src\lib\contracts.svelte.js` - the only data path. Refuses anything that is not a `{_meta, data}` envelope,
+  and turns `_meta` into exactly four honest states: `fresh` / `stale` / `snapshot` / `error`.
+* `app\src\cards\Card.svelte` - the shell every card goes through, which is how the honesty rules became
+  structural: badge comes from the contract's own `_meta`; a load failure renders an error state; and if refreshes
+  start failing while a good envelope is still held, the card shows the good data **and says refreshes are
+  failing** rather than passing last-known-good off as live.
+* Cards: `TonightPick` (reroll via the existing verb), `Services` (restart buttons only for services the server's
+  own allow-list accepts), `Storage` (disks + parity + fill forecast).
+* `app\test\freshness.test.mjs` - 16 assertions on the freshness state machine, plain `node`, no test framework.
+* `release.ps1` - build -> content-hash -> **leak-grep -> only then flip the junction**. Releases are immutable
+  `releases\<hash>\` dirs; `/v2` is a junction; rollback is one flip. Writes `release.json` (per-file sha256) for
+  P6's served-vs-built drift check, and `releases\ACTIVE.txt`.
+* Producer-side art cache: `emit_ops._cache_art` fetches the TMDB backdrop **server-side** into
+  `wg\dashboard\art\<tmdb>.jpg` (verified JPEG magic before publishing), so the page loads art same-origin and
+  makes **zero external requests** under a strict CSP. Bounded by the recs pool (~30 files).
+* `tonight-pick` contract -> **v1.1.0**: adds `tmdb` and `art_local`. The tmdb id is recovered by re-resolving
+  `recs[idx % len]` exactly as gen-dashboard does, then **cross-checked on title** - on a mismatch both go null,
+  so a wrong film's artwork can never be shown.
+
+**Changed**
+* `wg\dashboard\dashboard-server.py` (backup `.bak-preP1`, sha256
+  D4271AF47EB2744F20D016D0861DF6ED36F5D75C216C8498B116AB94656F1552):
+  * `GET /v2/data/<contract>.json` - registry-driven read route. Only contracts marked `client:true` are served,
+    so `library-index` and `unwatched-pool` (producer-only, 0.6 MB / 2085 rows) are 404 by construction.
+  * strict CSP + `nosniff` + `no-referrer` on `/v2/` responses **only** - the legacy pages are built from inline
+    `<style>`/`<script>` and would break under it. They are untouched until the P5 cutover.
+  * realpath containment check on static serving (the path join never rejected `..`; the extension allow-list made
+    that harmless, but defence in depth is cheaper than depending on that staying true).
+  * content-hashed assets get a 1-year immutable cache; `index.html` and contracts are `no-store`.
+
+**Verified by effect**
+* `/v2/` renders on desktop (1280x800: 4-col grid, full-width hero) and phone (375x812: single column, no
+  horizontal overflow, 67x44 tap target) with **zero console messages** - no CSP violations, no Svelte errors.
+* Reroll end-to-end from the page: `idx` 4 -> 5, pick changed *The Edge of Heaven* -> *American Graffiti*
+  (seeded by *Superbad*), new backdrop cached, contract re-validated. No download triggered - the verb only
+  re-pins a local index.
+* Route allow-list: `library-index`/`unwatched-pool`/`registry`/unknown names, `..`, and URL-encoded `..` all 404;
+  `services`/`smart`/`passport` 200. CSP present on `/v2/` and absent on `/`.
+* Built page contains 0 inline scripts, 0 inline `style=` attributes, 0 external-host references, and the live
+  20-hex `/act` nonce is still injected at serve time.
+* `freshness.test.mjs` 16/16 PASS. Validator 20/20 valid. leak-grep PASS on the release dir before the flip.
+* Legacy dashboard still 200 with 19 cards / 1 hero after both server restarts (0.63 s and 0.60 s of downtime).
+
+**Fixed during P1 (found by verifying instead of assuming)**
+* The bundle's CSS was served as `application/octet-stream` because `SimpleHTTPRequestHandler.extensions_map`
+  holds only the compressed-file types - real MIME resolution lives in `guess_type()`. My own `nosniff` header then
+  correctly refused to apply it, so the page rendered **completely unstyled** while HTTP status, contract fetches,
+  console output and the DOM tree all looked perfect. Now uses `self.guess_type(fp)` + explicit charset.
+
 ## [P0] 2026-07-29 - Contract extraction (no user-visible change)
 
 **Added**

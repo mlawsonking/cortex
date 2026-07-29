@@ -1,0 +1,256 @@
+/* Cortex design system - dark, dense, information-first.
+   Palette continues the legacy dashboard (so it reads as the same product) but the spacing, type scale and
+   component vocabulary are systematised. NOTE ON CSP: nothing here relies on inline style attributes; dynamic
+   values are applied by Svelte's style: directive, which writes through the CSSOM and is therefore permitted
+   under a strict style-src 'self'. */
+
+:root {
+  --bg: #0a0e14;
+  --bg-card: #161b22;
+  --bg-card-2: #11151c;
+  --bg-sunken: #0d1117;
+  --line: #232a33;
+  --line-soft: #1c2128;
+
+  --text: #c9d1d9;
+  --text-strong: #e6edf3;
+  --text-dim: #8b949e;
+  --text-faint: #6e7681;
+
+  --ok: #3fb950;
+  --warn: #d29922;
+  --bad: #f85149;
+  --info: #58a6ff;
+  --accent: #bc8cff;
+
+  --r-sm: 6px;
+  --r: 10px;
+  --r-lg: 14px;
+
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 22px;
+  --s6: 32px;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(1200px 600px at 80% -10%, rgba(88, 166, 255, 0.08), transparent),
+    radial-gradient(900px 500px at -10% 110%, rgba(188, 140, 255, 0.07), transparent);
+  color: var(--text);
+  font: 14px/1.5 var(--font);
+  padding: var(--s5);
+  padding-bottom: calc(var(--s6) + env(safe-area-inset-bottom));
+  min-height: 100vh;
+}
+
+@media (max-width: 640px) {
+  body { padding: var(--s3); }
+}
+
+/* ---------- layout ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: var(--s4);
+  align-items: start;
+}
+.span-all { grid-column: 1 / -1; }
+
+/* ---------- top bar ---------- */
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s5);
+}
+.brand {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  background: linear-gradient(90deg, var(--info), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.brand-sub { color: var(--text-dim); font-size: 12px; }
+.brand-sub a { color: var(--info); text-decoration: none; }
+.brand-sub a:hover { text-decoration: underline; }
+
+/* ---------- card ---------- */
+.card {
+  background: linear-gradient(180deg, var(--bg-card), var(--bg-card-2));
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s4) 18px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  margin-bottom: var(--s3);
+}
+.card-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+/* ---------- freshness badge (the honesty primitive) ---------- */
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.badge.fresh    { color: var(--text-faint); }
+.badge.stale    { color: var(--warn); background: rgba(210, 153, 34, 0.13); border-color: rgba(210, 153, 34, 0.35); }
+.badge.snapshot { color: var(--text-dim); background: rgba(139, 148, 158, 0.10); border-color: rgba(139, 148, 158, 0.28); }
+.badge.error    { color: var(--bad); background: rgba(248, 81, 73, 0.13); border-color: rgba(248, 81, 73, 0.35); }
+
+/* ---------- states ---------- */
+.state {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s3) 0;
+  font-size: 13px;
+  color: var(--text-faint);
+}
+.state.err { color: var(--bad); }
+.state-detail { color: var(--text-faint); font-size: 11px; font-family: var(--mono); word-break: break-word; }
+
+.skeleton {
+  height: 9px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg, var(--bg-sunken), #1a2029, var(--bg-sunken));
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+/* ---------- primitives ---------- */
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; }
+.dot.ok  { background: var(--ok);  box-shadow: 0 0 6px rgba(63, 185, 80, 0.6); }
+.dot.bad { background: var(--bad); box-shadow: 0 0 6px rgba(248, 81, 73, 0.6); }
+.dot.unk { background: var(--text-faint); }
+
+.muted { color: var(--text-faint); font-size: 12px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.rowgrid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2) var(--s3); }
+.row { display: flex; align-items: center; gap: var(--s2); font-size: 13px; min-width: 0; }
+.row-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.bar-row { display: flex; align-items: center; gap: var(--s3); margin-bottom: 9px; }
+.bar-label { width: 150px; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-pct { width: 40px; text-align: right; font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.bar {
+  flex: 1;
+  height: 9px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.bar-fill { height: 100%; border-radius: var(--r-sm); background: linear-gradient(90deg, var(--ok), var(--info)); transition: width 0.4s ease; }
+.bar-fill.warn { background: linear-gradient(90deg, var(--warn), #f0883e); }
+.bar-fill.crit { background: linear-gradient(90deg, #f0883e, var(--bad)); }
+@media (prefers-reduced-motion: reduce) { .bar-fill { transition: none; } }
+
+.btn {
+  background: #1f6feb;
+  color: #fff;
+  border: 0;
+  border-radius: var(--r-sm);
+  padding: 7px 14px;
+  min-height: 30px;
+  font: 600 12px var(--font);
+  cursor: pointer;
+}
+.btn:hover:not(:disabled) { background: #388bfd; }
+.btn:disabled { opacity: 0.55; cursor: default; }
+.btn.ghost { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); }
+
+/* ---------- hero (Tonight's Pick) ---------- */
+.hero {
+  grid-column: 1 / -1;
+  position: relative;
+  border: 1px solid #2a3550;
+  border-radius: 16px;
+  padding: 24px 26px;
+  overflow: hidden;
+  background: linear-gradient(120deg, var(--bg-card), #1a2333 55%, #241a33);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+.hero-art {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+  z-index: 0;
+}
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(16, 20, 28, 0.94), rgba(20, 26, 45, 0.72));
+  z-index: 1;
+}
+.hero-body { position: relative; z-index: 2; }
+.hero-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.6px; color: var(--text-dim); }
+.hero-title {
+  font-size: clamp(24px, 5vw, 32px);
+  font-weight: 800;
+  line-height: 1.12;
+  margin: 6px 0 8px;
+  background: linear-gradient(90deg, var(--info), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-year { color: var(--text-faint); font-size: 18px; font-weight: 400; -webkit-text-fill-color: var(--text-faint); }
+.hero-why { color: var(--text); font-size: 14px; margin-bottom: 14px; }
+.hero-actions { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+.act-msg { font-size: 12px; color: var(--text-dim); }
+.act-msg.err { color: var(--bad); }
+
+.foot { text-align: center; color: #484f58; font-size: 11px; margin-top: var(--s5); }
+.foot a { color: var(--info); text-decoration: none; }
+
+/* ---------- phone ---------- */
+/* This is the primary device for the Tonight's Pick / ops glance, so the touch rules are not an afterthought:
+   44px minimum tap height (Apple HIG / Material), and the fixed 150px bar label gives way to a percentage so the
+   bars stay readable at 375px instead of being crushed to a sliver. */
+@media (max-width: 640px) {
+  .bar-label { width: 46%; }
+  .btn { min-height: 44px; padding: 12px 18px; font-size: 13px; }
+  .rowgrid { gap: var(--s3) var(--s3); }
+  .hero { padding: 20px 18px; }
+  .card { padding: var(--s3) var(--s4); }
+}
+
+@media (hover: none) {
+  .btn { min-height: 44px; }
+}

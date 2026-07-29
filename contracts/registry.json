@@ -117,7 +117,7 @@
       "consumers": ["Drives card", "Protection & Health card"]
     },
     "tonight-pick": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "producer": "gen-dashboard.py gather_tonight (personal-recs.json + audit\\tonight-pick.json idx) -> emit_ops.py",
       "cadence": "120s (re-resolved every regen; reroll verb bumps idx)",
       "slo_seconds": 900,
