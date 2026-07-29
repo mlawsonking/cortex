@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "health",
+  "description": "Deep-health probes (queue-stuck, indexers, VPN kill-switch, parity age, backup age) plus 7-day service flap counts from metrics.db.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["probes", "incidents_7d"],
+  "properties": {
+    "probes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "ok", "detail"],
+        "properties": {
+          "name": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "detail": {
+            "type": "string",
+            "description": "'n/a' means the probe could not run. A card must render that distinctly from a pass - an unrunnable probe is not a healthy probe."
+          }
+        }
+      }
+    },
+    "incidents_7d": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["service", "downs"],
+        "properties": {
+          "service": { "type": "string" },
+          "downs": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

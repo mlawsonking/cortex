@@ -1,0 +1,210 @@
+{
+  "_registry": {
+    "version": "1.0.0",
+    "updated": "2026-07-29",
+    "note": "THE source of truth for every contract the Cortex brain app reads. A contract = file + schema + producer + cadence + freshness SLO. Producers may only change ADDITIVELY within a major version. slo_seconds=null means no schedule exists for that producer: render the data's age, never claim it is fresh, never show a STALE badge (it is a static snapshot by design).",
+    "deviation_from_gameplan_seed": "The gameplan's seed row 'pulse (svc/disk/queue/vpn)' is split here into one contract PER CARD (services, storage, pipeline, hnr, library-stats, plex-now, calendar, activity, health, security, smart) per architecture rule 'each card reads a named JSON contract' - independent SLOs, independent error states. Nothing was dropped."
+  },
+  "contracts": {
+    "services": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py gather() -> brain\\producers\\emit_ops.py",
+      "cadence": "120s (dashboard-server.py regen loop)",
+      "slo_seconds": 900,
+      "source": null,
+      "client": true,
+      "schema": "services.schema.json",
+      "consumers": ["Services card"]
+    },
+    "storage": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py gather_disks/gather_parity + pulse.forecast_gfull -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 900,
+      "source": null,
+      "client": true,
+      "schema": "storage.schema.json",
+      "consumers": ["Storage card", "Parity card", "I10 Cost of Quality"]
+    },
+    "pipeline": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py qBit/queue gather -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 900,
+      "source": null,
+      "client": true,
+      "schema": "pipeline.schema.json",
+      "consumers": ["Download pipeline card"]
+    },
+    "hnr": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py qBit gather -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 900,
+      "source": null,
+      "client": true,
+      "schema": "hnr.schema.json",
+      "consumers": ["H&R Sentinel card", "I4 H&R Horizon"]
+    },
+    "library-stats": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py Plex/Radarr/Sonarr gather -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 1800,
+      "source": null,
+      "client": true,
+      "schema": "library-stats.schema.json",
+      "consumers": ["Library card"]
+    },
+    "plex-now": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py Plex gather + gather_plex_health -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 900,
+      "source": null,
+      "client": true,
+      "schema": "plex-now.schema.json",
+      "consumers": ["Now playing card", "Recently added shelf", "household status page"]
+    },
+    "calendar": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py gather_calendar -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 1800,
+      "source": null,
+      "client": true,
+      "schema": "calendar.schema.json",
+      "consumers": ["Release calendar card"]
+    },
+    "activity": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py gather_events -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 1800,
+      "source": null,
+      "client": true,
+      "schema": "activity.schema.json",
+      "consumers": ["Activity card", "I8 Anomaly Feed"]
+    },
+    "health": {
+      "version": "1.0.0",
+      "producer": "pulse.py gather_deephealth/incidents_7d -> emit_ops.py",
+      "cadence": "120s",
+      "slo_seconds": 1800,
+      "source": null,
+      "client": true,
+      "schema": "health.schema.json",
+      "consumers": ["Protection & Health card"]
+    },
+    "security": {
+      "version": "1.0.0",
+      "producer": "pulse.py gather_security (15min cache) -> emit_ops.py",
+      "cadence": "15min",
+      "slo_seconds": 3600,
+      "source": "wg\\dashboard\\security.json",
+      "client": true,
+      "schema": "security.schema.json",
+      "consumers": ["Security posture card"]
+    },
+    "smart": {
+      "version": "1.0.0",
+      "producer": "pulse.py gather_smart (15min cache, smartctl) -> emit_ops.py",
+      "cadence": "15min",
+      "slo_seconds": 3600,
+      "source": "wg\\dashboard\\smart.json",
+      "client": true,
+      "schema": "smart.schema.json",
+      "consumers": ["Drives card", "Protection & Health card"]
+    },
+    "tonight-pick": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py gather_tonight (personal-recs.json + audit\\tonight-pick.json idx) -> emit_ops.py",
+      "cadence": "120s (re-resolved every regen; reroll verb bumps idx)",
+      "slo_seconds": 900,
+      "source": "wg\\audit\\personal-recs.json",
+      "client": true,
+      "schema": "tonight-pick.schema.json",
+      "consumers": ["Tonight's Pick hero", "I1 Rhythm-aware scheduling"]
+    },
+    "taste": {
+      "version": "1.0.0",
+      "producer": "gen-dashboard.py gather_taste (trakt-ratings.json, 12h cache) -> emit_ops.py",
+      "cadence": "12h",
+      "slo_seconds": 93600,
+      "source": "wg\\audit\\trakt-ratings.json",
+      "client": true,
+      "schema": "taste.schema.json",
+      "consumers": ["Taste page", "I7 Taste Velocity"]
+    },
+    "recs": {
+      "version": "1.0.0",
+      "producer": "personal-recs.ps1 (task Personal-Recs-Weekly, Sun 08:00)",
+      "cadence": "weekly",
+      "slo_seconds": 691200,
+      "source": "wg\\audit\\personal-recs.json",
+      "client": true,
+      "schema": "recs.schema.json",
+      "consumers": ["Recommended card", "Tonight's Pick pool", "picks page"]
+    },
+    "oracle": {
+      "version": "1.0.0",
+      "producer": "oracle-brief.ps1 + codec-advisor.ps1 (task Oracle Brief, daily 06:45)",
+      "cadence": "daily",
+      "slo_seconds": 93600,
+      "source": "wg\\dashboard\\oracle.json",
+      "client": true,
+      "schema": "oracle.schema.json",
+      "consumers": ["Oracle card", "HEVC reclaim list", "I9 Monthly Wrapped"]
+    },
+    "library-index": {
+      "version": "1.0.0",
+      "producer": "library-index.py (task Library Index, daily 06:30)",
+      "cadence": "daily",
+      "slo_seconds": 93600,
+      "source": "wg\\audit\\library-index.json",
+      "client": false,
+      "schema": "library-index.schema.json",
+      "consumers": ["I2 Compression Ledger", "I3 Dead Shelf", "I6 Gap Radar", "nl-search/mood runners"]
+    },
+    "taste-graph": {
+      "version": "1.0.0",
+      "producer": "taste-graph.ps1 (Tautulli history -> per-persona genre/title graph)",
+      "cadence": "weekly",
+      "slo_seconds": 691200,
+      "source": "wg\\audit\\taste-graph.json",
+      "client": true,
+      "schema": "taste-graph.schema.json",
+      "consumers": ["I5 Couple Compatibility", "I7 Taste Velocity"]
+    },
+    "unwatched-pool": {
+      "version": "1.0.0",
+      "producer": "get-unwatched-pool.py (manual / ad-hoc)",
+      "cadence": "manual",
+      "slo_seconds": 691200,
+      "source": "wg\\audit\\unwatched-pool.json",
+      "client": false,
+      "schema": "unwatched-pool.schema.json",
+      "consumers": ["I3 Dead Shelf", "I5 Couple Compatibility"]
+    },
+    "upgrades": {
+      "version": "1.0.0",
+      "producer": "upgrade-advisor.ps1 (manual - NO scheduled task exists)",
+      "cadence": "manual",
+      "slo_seconds": null,
+      "source": "wg\\dashboard\\upgrade-proposals.json",
+      "client": true,
+      "schema": "upgrades.schema.json",
+      "consumers": ["4K upgrade advisor card"]
+    },
+    "passport": {
+      "version": "1.0.0",
+      "producer": "passport.ps1 (manual - NO scheduled task exists)",
+      "cadence": "manual",
+      "slo_seconds": null,
+      "source": "wg\\dashboard\\passport.json",
+      "client": true,
+      "schema": "passport.schema.json",
+      "consumers": ["Auteur passport card", "I6 Gap Radar"]
+    }
+  }
+}

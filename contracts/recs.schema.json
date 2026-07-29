@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "recs",
+  "description": "Wrapped personal-recs.ps1 output: Trakt-seeded recommendations, each carrying the seed film that produced it. Wrapped contract - additive producer fields are allowed and must not fail validation. Taste rules (1987 year-floor etc.) live in the producer, never in the UI.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": true,
+    "required": ["tmdb", "title", "year", "genres", "rating", "score", "from"],
+    "properties": {
+      "tmdb": { "type": ["integer", "null"] },
+      "trakt": { "type": ["integer", "null"] },
+      "title": { "type": "string" },
+      "year": { "type": ["integer", "null"] },
+      "genres": { "type": "string" },
+      "rating": { "type": ["number", "null"] },
+      "score": { "type": ["integer", "number"] },
+      "from": { "type": "string" }
+    }
+  }
+}

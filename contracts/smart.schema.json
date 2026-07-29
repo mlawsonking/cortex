@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "smart",
+  "description": "Per-drive SMART snapshot. Verdict semantics are the house rules: realloc>0 with zero growth is WARN, not failing (d3/000D1RAN has been stable at 448 for ~2 years). A temp of null means unreadable this scan - never render it as 0. Growth judgements belong to smart-check-weekly.ps1, never to a card.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["drives"],
+  "properties": {
+    "drives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["dev", "model", "serial", "temp", "verdict", "realloc", "pending"],
+        "properties": {
+          "dev": { "type": "string" },
+          "model": { "type": "string" },
+          "serial": { "type": "string" },
+          "temp": { "type": ["integer", "number", "null"] },
+          "verdict": { "type": "string", "enum": ["PASS", "WARN", "RMA", "FAIL"] },
+          "realloc": { "type": ["integer", "number"] },
+          "pending": { "type": ["integer", "number"] }
+        }
+      }
+    }
+  }
+}

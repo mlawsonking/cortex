@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "unwatched-pool",
+  "description": "Wrapped get-unwatched-pool.py output: owned-but-never-played titles with Plex ratingKey. Producer-only contract (client:false) - 2k+ rows. This producer has no scheduled task, so it goes STALE by design; the Dead Shelf engine (I3) is the consumer that will need it refreshed.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": true,
+    "required": ["ratingKey", "tmdb", "title", "year", "rating", "genres"],
+    "properties": {
+      "ratingKey": { "type": ["string", "integer"] },
+      "tmdb": { "type": ["integer", "null"] },
+      "title": { "type": "string" },
+      "year": { "type": ["integer", "null"] },
+      "rating": { "type": ["number", "integer", "null"] },
+      "genres": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

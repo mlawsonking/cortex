@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "library-index",
+  "description": "Wrapped library-index.py output: one trimmed row per tracked movie (owned or not) with watch + rating state. Producer-only contract (client:false in the registry) - it is ~0.6 MB and must never be shipped to a phone; insight producers derive card-sized contracts from it.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": true,
+    "required": ["title", "year", "tmdb", "radarrId", "genres", "runtime", "hasFile", "res", "rating", "watched"],
+    "properties": {
+      "title": { "type": "string" },
+      "year": { "type": ["integer", "null"] },
+      "tmdb": { "type": ["integer", "null"] },
+      "radarrId": { "type": ["integer", "null"] },
+      "genres": { "type": "array", "items": { "type": "string" } },
+      "runtime": { "type": ["integer", "null"] },
+      "hasFile": { "type": "boolean" },
+      "res": { "type": ["string", "null"] },
+      "rating": { "type": ["integer", "number", "null"], "description": "Michael's own rating (1-10) or null if unrated. Never coerce null to 0 - unrated is not a bad rating." },
+      "watched": { "type": "boolean" }
+    }
+  }
+}

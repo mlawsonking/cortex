@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "library-stats",
+  "description": "Headline counts from Plex, Radarr and Sonarr. Every field nullable so a down service renders 'unavailable' instead of a false zero.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["plex", "radarr", "sonarr", "rated"],
+  "properties": {
+    "plex": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["movies", "tv"],
+      "properties": {
+        "movies": { "type": ["integer", "null"], "minimum": 0 },
+        "tv": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "radarr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "have", "monitored_missing", "size_bytes"],
+      "properties": {
+        "total": { "type": ["integer", "null"], "minimum": 0 },
+        "have": { "type": ["integer", "null"], "minimum": 0 },
+        "monitored_missing": { "type": ["integer", "null"], "minimum": 0 },
+        "size_bytes": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "sonarr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "monitored", "missing_episodes"],
+      "properties": {
+        "series": { "type": ["integer", "null"], "minimum": 0 },
+        "monitored": { "type": ["integer", "null"], "minimum": 0 },
+        "missing_episodes": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "rated": { "type": ["integer", "null"], "minimum": 0 }
+  }
+}

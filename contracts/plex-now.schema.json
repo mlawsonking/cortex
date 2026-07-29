@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "plex-now",
+  "description": "Live Plex sessions, the recently-added shelf, and the real streaming-path probe (identity + sections, not a port check). thumb values are Plex library keys to be fetched through the existing same-origin /photo proxy - never a direct Plex URL (that would leak the token to the browser).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ok", "sessions", "recent"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "user", "thumb", "offset_ms", "duration_ms", "pct"],
+        "properties": {
+          "title": { "type": "string" },
+          "user": { "type": "string" },
+          "thumb": { "type": "string" },
+          "offset_ms": { "type": "number", "minimum": 0 },
+          "duration_ms": { "type": "number", "minimum": 0 },
+          "pct": { "type": "integer", "minimum": 0, "maximum": 100 }
+        }
+      }
+    },
+    "recent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "year", "thumb"],
+        "properties": {
+          "title": { "type": "string" },
+          "year": { "type": ["integer", "string", "null"] },
+          "thumb": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "tonight-pick",
+  "description": "The hero pick resolved from the recs pool by the reroll index. pick=null is a legitimate state (empty pool) and must render as such. art_url points at TMDB: the v2 app must NOT load it cross-origin (CSP self-only) - a producer-side cache serves it same-origin instead.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pick", "idx", "pool"],
+  "properties": {
+    "pick": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["title", "year", "why", "genres", "art_url", "art_external"],
+      "properties": {
+        "title": { "type": "string" },
+        "year": { "type": ["integer", "string", "null"] },
+        "why": { "type": "string", "description": "The seed film that produced this pick ('because you loved X'). Empty = no seed known; the UI must not invent a reason." },
+        "genres": { "type": "string" },
+        "art_url": { "type": "string" },
+        "art_external": { "type": "boolean" }
+      }
+    },
+    "idx": { "type": "integer", "minimum": 0 },
+    "pool": { "type": "integer", "minimum": 0 }
+  }
+}

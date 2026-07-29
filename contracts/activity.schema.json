@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "activity",
+  "description": "Unified newest-first event stream: Radarr/Sonarr history + Tautulli watches. ts is a unix epoch (seconds); 0 means the source gave no parseable date - the UI must not render a fake time for it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts", "kind", "title", "detail"],
+        "properties": {
+          "ts": { "type": "number", "minimum": 0 },
+          "kind": { "type": "string", "enum": ["grabbed", "imported", "failed", "watched", "other"] },
+          "title": { "type": "string" },
+          "detail": { "type": "string" }
+        }
+      }
+    }
+  }
+}

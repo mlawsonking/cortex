@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "taste",
+  "description": "Rating distribution and decade spread over the full Trakt movie-ratings set. generated_at is the trakt-ratings.json cache mtime (12h refresh), not the emit time.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["total", "histogram", "decades", "cached"],
+  "properties": {
+    "total": { "type": "integer", "minimum": 0 },
+    "histogram": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rating", "count"],
+        "properties": {
+          "rating": { "type": "integer", "minimum": 1, "maximum": 10 },
+          "count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "decades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decade", "count"],
+        "properties": {
+          "decade": { "type": "integer", "minimum": 1800 },
+          "count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "cached": {
+      "type": "boolean",
+      "description": "true = Trakt was unreachable and this came from the on-disk cache. The UI shows it; a fallback is not a fresh read."
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "services",
+  "description": "Port-probe status of every stack service, plus the qBit VPN-bind flag. Emitted by emit_ops.py from gen-dashboard's gather().",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["up_count", "total", "vpn_bound", "services"],
+  "properties": {
+    "up_count": { "type": "integer", "minimum": 0 },
+    "total": { "type": "integer", "minimum": 0 },
+    "vpn_bound": {
+      "type": ["boolean", "null"],
+      "description": "true = qBit bound to the Windscribe adapter (kill-switch armed). null = could not be determined - the UI must say 'unknown', never 'unbound'."
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "up"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "up": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

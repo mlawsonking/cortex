@@ -1,0 +1,14 @@
+# Runtime output - regenerated every ~120s by the gen-dashboard tail hook. Never committed: it churns constantly
+# and it is derived data, not source. (It contains no secrets either - leak-grep.ps1 proves that on every run.)
+data/
+
+# Build + tooling output
+node_modules/
+releases/
+dist/
+__pycache__/
+*.pyc
+*.tmp
+
+# Client error beacon (P6) - rotated runtime log, not source
+errors.jsonl

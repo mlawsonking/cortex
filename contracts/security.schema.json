@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "security",
+  "description": "Security-posture probes: listening-port diff vs baseline, Defender real-time protection, Tailscale peer count. Wrapped from pulse.py's 15-minute cache, so generated_at is that cache file's mtime.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["probes"],
+  "properties": {
+    "probes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "ok", "detail"],
+        "properties": {
+          "name": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "detail": { "type": "string" }
+        }
+      }
+    }
+  }
+}

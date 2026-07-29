@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "passport",
+  "description": "Wrapped passport.ps1 output: per-auteur filmography completion (seen / owned / parked / missing). NO scheduled task produces this - slo_seconds:null, snapshot date rendered. The 1987 year-floor and other taste rules are the producer's job; a card must not re-filter and quietly disagree with it.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["directors"],
+  "properties": {
+    "directors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["name", "total", "seen", "own", "parked", "missing"],
+        "properties": {
+          "name": { "type": "string" },
+          "total": { "type": "integer", "minimum": 0 },
+          "seen": { "type": "integer", "minimum": 0 },
+          "own": { "type": "integer", "minimum": 0 },
+          "parked": { "type": "integer", "minimum": 0 },
+          "missing": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "pipeline",
+  "description": "qBittorrent transfer state + *arr queue depths. All numeric fields are nullable: qBit being unreachable must render as 'unavailable', never as zero.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dl_bps", "ul_bps", "ratio", "downloading", "seeding", "torrents", "active", "queue"],
+  "properties": {
+    "dl_bps": { "type": ["number", "null"], "minimum": 0 },
+    "ul_bps": { "type": ["number", "null"], "minimum": 0 },
+    "ratio": { "type": ["number", "null"], "minimum": 0 },
+    "downloading": { "type": ["integer", "null"], "minimum": 0 },
+    "seeding": { "type": ["integer", "null"], "minimum": 0 },
+    "torrents": { "type": ["integer", "null"], "minimum": 0 },
+    "active": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "pct", "mbps"],
+        "properties": {
+          "name": { "type": "string" },
+          "pct": { "type": "number", "minimum": 0, "maximum": 100 },
+          "mbps": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "queue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["radarr", "sonarr", "sonarr_missing"],
+      "properties": {
+        "radarr": { "type": ["integer", "null"], "minimum": 0 },
+        "sonarr": { "type": ["integer", "null"], "minimum": 0 },
+        "sonarr_missing": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    }
+  }
+}

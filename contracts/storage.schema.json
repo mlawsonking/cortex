@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "storage",
+  "description": "Every present volume, the SnapRAID parity state, and the least-squares fill forecast.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["disks", "forecast", "parity"],
+  "properties": {
+    "disks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["letter", "label", "total", "used", "free", "removable"],
+        "properties": {
+          "letter": { "type": "string", "minLength": 1, "maxLength": 1 },
+          "label": { "type": "string" },
+          "total": { "type": "number", "minimum": 0 },
+          "used": { "type": "number", "minimum": 0 },
+          "free": { "type": "number", "minimum": 0 },
+          "removable": { "type": "boolean" }
+        }
+      }
+    },
+    "forecast": {
+      "type": "string",
+      "description": "Human sentence from pulse.forecast_gfull (e.g. 'G: full in ~3.4 years'). Empty string = unavailable; the UI must render nothing rather than invent a number."
+    },
+    "parity": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["state", "pct", "pfree"],
+      "properties": {
+        "state": { "type": "string", "enum": ["synced", "syncing", "stale"] },
+        "pct": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "pfree": { "type": ["number", "null"], "minimum": 0 }
+      }
+    }
+  }
+}

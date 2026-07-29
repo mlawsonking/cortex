@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "oracle",
+  "description": "Wrapped oracle-brief.ps1 + codec-advisor.ps1 output: deterministic health score, narrative brief lines, and the HEVC-reclaimable list (proposal-only - no re-encode is ever triggered from a card). A brief of ['AI offline - deterministic score only'] is an honest state, not an error.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["generated", "score", "brief", "why", "codec"],
+  "properties": {
+    "generated": { "type": "string" },
+    "score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+    "brief": { "type": "array", "items": { "type": "string" } },
+    "why": { "type": "string" },
+    "codec": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["title", "gb"],
+        "properties": {
+          "title": { "type": "string" },
+          "gb": { "type": ["number", "integer"], "minimum": 0 }
+        }
+      }
+    }
+  }
+}

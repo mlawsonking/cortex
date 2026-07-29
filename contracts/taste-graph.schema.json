@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "taste-graph",
+  "description": "Wrapped taste-graph.ps1 output: Tautulli play history distilled per persona (currently 'michael' and 'kids'). personas is an open map - a new persona must not break validation, so each value is validated against a shared persona schema.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["generatedAt", "source", "totalPlays", "personas"],
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "source": { "type": "string" },
+    "totalPlays": { "type": ["integer", "null"], "minimum": 0 },
+    "personas": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["plays", "topGenres", "topTitles"],
+        "properties": {
+          "plays": { "type": ["integer", "null"], "minimum": 0 },
+          "topGenres": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["genre", "count"],
+              "properties": {
+                "genre": { "type": "string" },
+                "count": { "type": ["integer", "number"] }
+              }
+            }
+          },
+          "topTitles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["title", "plays"],
+              "properties": {
+                "title": { "type": "string" },
+                "plays": { "type": ["integer", "number"] }
+              }
+            }
+          },
+          "peakHours": { "type": "array" },
+          "recent": { "type": "array" }
+        }
+      }
+    }
+  }
+}

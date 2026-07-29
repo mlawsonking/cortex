@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "hnr",
+  "description": "Seeding torrents below a 1.0 ratio (hit-and-run exposure). READ-ONLY by policy: no card built on this contract may ever offer a removal verb - the only sanctioned removal test is downloaded==0 bytes, decided server-side.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["count", "torrents"],
+  "properties": {
+    "count": { "type": "integer", "minimum": 0 },
+    "torrents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "ratio"],
+        "properties": {
+          "name": { "type": "string" },
+          "ratio": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}
