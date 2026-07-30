@@ -27,3 +27,35 @@ export function fillClass(percent) {
   if (percent > 75) return 'warn';
   return '';
 }
+
+/** Bytes/sec -> "12.4 MB/s". */
+export function speed(bps) {
+  if (!Number.isFinite(bps)) return '-';
+  return (bps / 1e6).toFixed(1) + ' MB/s';
+}
+
+/** Unix seconds -> "4m" / "3h" / "2d". ts===0 means the source gave no parseable date: say so, never guess. */
+export function since(ts, nowMs) {
+  if (!Number.isFinite(ts) || ts <= 0) return 'undated';
+  const s = Math.max(0, nowMs / 1000 - ts);
+  if (s < 90) return 'now';
+  if (s < 5400) return Math.round(s / 60) + 'm';
+  if (s < 172800) return Math.round(s / 3600) + 'h';
+  return Math.round(s / 86400) + 'd';
+}
+
+/** "2026-08-04" -> "today" / "tomorrow" / "Tue 04 Aug". Local-time comparison, no UTC drift. */
+export function dayLabel(dateStr, nowMs) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr || '');
+  if (!m) return dateStr || '?';
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const today = new Date(nowMs);
+  const days = Math.round((d - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000);
+  if (days === 0) return 'today';
+  if (days === 1) return 'tomorrow';
+  // Always show the year when it is not the current one. A bare "Tue, Oct 25" inside a card headed
+  // "next 14 days" read as upcoming when the underlying date was 2022.
+  const opts = { weekday: 'short', day: '2-digit', month: 'short' };
+  if (d.getFullYear() !== today.getFullYear()) opts.year = 'numeric';
+  return d.toLocaleDateString(undefined, opts);
+}

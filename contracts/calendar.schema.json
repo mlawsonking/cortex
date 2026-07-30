@@ -4,9 +4,14 @@
   "description": "Merged Sonarr episode + Radarr release calendar for the next N days, date-sorted. 'kind' is semantic so the UI chooses its own iconography.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["days", "items"],
+  "required": ["days", "items", "total"],
   "properties": {
     "days": { "type": "integer", "minimum": 1 },
+    "total": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How many events the producer actually found in the window, before the display cap. items may be shorter; a card must show 'N of total' rather than truncate silently."
+    },
     "items": {
       "type": "array",
       "items": {

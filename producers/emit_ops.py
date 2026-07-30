@@ -66,10 +66,15 @@ def _emit_storage(d):
     parity = None
     if pa:
         st = pa.get("state")
+        last_ok = _num(pa.get("last_ok"))
         parity = {
             "state": st if st in ("synced", "syncing", "stale") else "stale",
             "pct": pa.get("pct") if isinstance(pa.get("pct"), int) else None,
             "pfree": _num(pa.get("pfree")),
+            # Age of the last SUCCESSFUL sync, and what proved it. 'flag' means we could only find the old
+            # migration marker, which is a much weaker claim than the log's own completion line - the card says so.
+            "last_sync_age_h": (round((time.time() - last_ok) / 3600.0, 1) if last_ok else None),
+            "sync_source": pa.get("last_ok_source") if pa.get("last_ok_source") in ("log", "flag") else None,
         }
     bc.write_contract("storage", {"disks": disks, "forecast": _s(d.get("forecast")), "parity": parity})
 
@@ -165,7 +170,9 @@ def _emit_calendar(d):
         if len(dt) != 10:
             continue                                  # a row we cannot date honestly is dropped, not faked
         items.append({"date": dt, "kind": kind, "title": _s(title), "detail": _s(sub)})
-    bc.write_contract("calendar", {"days": 14, "items": items})
+    total = d.get("calendar_total")
+    bc.write_contract("calendar", {"days": 14, "items": items,
+                                   "total": total if isinstance(total, int) else len(items)})
 
 
 def _emit_activity(d):

@@ -2,6 +2,52 @@
 
 Semver on the app; each contract is versioned independently in `contracts\registry.json`.
 
+## [P2] 2026-07-30 - The ops board, and the end of the stale-parity bug class
+
+**Added** - 9 cards, all routed through `Card.svelte` so freshness stays structural: `Drives` (SMART),
+`Pipeline`, `NowPlaying`, `RecentlyAdded`, `Library`, `Health`, `Security`, `Calendar`, `Activity`.
+12 cards now render 11 contracts. Also `parity-check.py` - a side-by-side diff of the legacy page against the
+contracts (both come from ONE gen-dashboard run, so any disagreement is a mapping bug in emit_ops).
+
+**Fixed - the bug class P2 exists to kill.** Parity freshness was decided by whether
+`snapraid-sync-complete.flag` EXISTED. That file is a one-off migration marker written 2026-07-03 and never
+touched again, so for ~27 days the Storage card said **"protected"** while the Health card said **"Parity sync
+648h ago"** - two widgets, one stale file, both wrong, contradicting each other in public. Parity is now decided
+by the sync log's own completion line (`pulse.snapraid_last_ok`): `synced` means a sync SUCCEEDED within 48h.
+Truth on this box: it synced today at 05:13, exit 0. Both the legacy page and v2 now say so, and both will flip
+to stale the day it stops. The contract carries `last_sync_age_h` + `sync_source`, and a `flag`-only answer is
+labelled as the weaker claim it is.
+
+**Fixed - reading that log needed a second bug fixed first.** The first implementation still fell back to the
+flag, because `wg\snapraid-sync.log` is **mixed-encoding**: snapraid's output is UTF-16LE (PowerShell redirect)
+while the `=== nightly sync EXITED code=0 <iso> ===` markers are plain UTF-8. Decoded as UTF-16 the marker
+becomes CJK mojibake, so a single-encoding reader literally cannot see it. `_tail_variants()` now tries UTF-16,
+UTF-16 shifted one byte, and UTF-8, and takes the newest match from any of them.
+
+**Fixed - the calendar was showing dates that contradicted its own heading.** A movie enters the 14-day window on
+one of three release dates, but the producer displayed `digital || physical || inCinemas` in fixed priority.
+*Barbarian* is in the window for its **2026-08-11 physical** release and was rendered as **2022-10-25**; three
+more showed dates already past. It now picks the earliest date that is actually IN the window and names its kind
+(digital / physical / in cinemas), dropping rows where none is. `dayLabel()` also shows the year whenever it is
+not the current one - a bare "Tue, Oct 25" under a "next 14 days" heading reads as upcoming.
+
+**Fixed - no silent caps.** The calendar renders at most 16 rows and said nothing about it (which is how
+Barbarian's corrected row disappeared entirely). The contract now carries `total` and the card reads
+"showing 16 of 27 in the next 14 days". `calendar` -> v1.1.0, `storage` -> v1.1.0.
+
+**Improved - "not checked" is not "healthy".** A health probe reporting `n/a` could not run; the legacy board
+painted those green beside genuine passes. They now render as unknown, with a count. Activity also collapses
+ADJACENT identical events into one row with a count, so a retry storm reads as `x10` instead of ten rows - and
+that count sits outside the truncating element, because on a phone the ellipsis was eating it.
+
+**Verified by effect**
+* `parity-check.py`: **20 values compared, 0 differ** - services, Plex/Radarr/Sonarr counts, queues, pipeline,
+  every disk's free space, SMART row count, H&R row count.
+* Validator 20/20 valid after both version bumps. 12 cards render, all badges fresh, 12 posters loaded with 0
+  broken images, zero console messages, desktop 4-col and phone single-column with no page overflow.
+* `snapraid_last_ok()` -> `source=log, 2026-07-30T05:13:09, age 8.4h`; Storage reads "last successful sync 8h
+  ago"; the Parity-sync probe flipped from a 27-day-old false alarm to `True / 8h ago`.
+
 ## [P1] 2026-07-29 - Foundation + first light (`/v2/`) - awaiting GATE M1
 
 **Added**

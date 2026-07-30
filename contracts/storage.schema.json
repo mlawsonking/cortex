@@ -29,11 +29,21 @@
     "parity": {
       "type": ["object", "null"],
       "additionalProperties": false,
-      "required": ["state", "pct", "pfree"],
+      "required": ["state", "pct", "pfree", "last_sync_age_h", "sync_source"],
       "properties": {
-        "state": { "type": "string", "enum": ["synced", "syncing", "stale"] },
+        "state": {
+          "type": "string",
+          "enum": ["synced", "syncing", "stale"],
+          "description": "'synced' means a sync SUCCEEDED within 48h - proven by the sync log's own completion line, not by the existence of a file. The old flag-existence test reported 'protected' for 27 days on a stale 2026-07-03 migration marker."
+        },
         "pct": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
-        "pfree": { "type": ["number", "null"], "minimum": 0 }
+        "pfree": { "type": ["number", "null"], "minimum": 0 },
+        "last_sync_age_h": { "type": ["number", "null"], "minimum": 0 },
+        "sync_source": {
+          "type": ["string", "null"],
+          "enum": ["log", "flag", null],
+          "description": "'log' = a real completion record. 'flag' = only the legacy migration marker was found, which is a weaker claim and must be labelled as such in the UI. null = neither."
+        }
       }
     }
   }

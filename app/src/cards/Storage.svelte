@@ -36,9 +36,17 @@
           <span class="muted mono">{d.parity.pct}%</span>
         {/if}
       </div>
-      {#if d.parity.pfree !== null}
-        <div class="muted" style:margin-top="4px">parity drive {bytes(d.parity.pfree)} free</div>
-      {/if}
+      <div class="muted" style:margin-top="4px">
+        {#if d.parity.last_sync_age_h === null}
+          no successful-sync record found
+        {:else}
+          last successful sync {d.parity.last_sync_age_h < 1 ? 'under an hour' : Math.round(d.parity.last_sync_age_h) + 'h'} ago
+          {#if d.parity.sync_source === 'flag'}
+            <span class="k-failed">(marker file only &mdash; no completion record in the log)</span>
+          {/if}
+        {/if}
+        {#if d.parity.pfree !== null}&middot; parity drive {bytes(d.parity.pfree)} free{/if}
+      </div>
     {:else}
       <div class="muted" style:margin-top="12px">parity state unavailable</div>
     {/if}

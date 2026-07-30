@@ -236,6 +236,47 @@ body {
 .act-msg { font-size: 12px; color: var(--text-dim); }
 .act-msg.err { color: var(--bad); }
 
+/* ---------- stat blocks ---------- */
+.stats { display: flex; gap: 18px; flex-wrap: wrap; }
+.stat .n { font-size: 26px; font-weight: 700; color: var(--text-strong); font-variant-numeric: tabular-nums; line-height: 1.15; }
+.stat .n.dim { color: var(--text-faint); }
+.stat .l { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; }
+.stat.accent .n {
+  background: linear-gradient(90deg, var(--info), var(--accent));
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* ---------- list rows ---------- */
+.li {
+  display: flex; align-items: baseline; gap: var(--s2);
+  padding: 5px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px;
+}
+.li:last-child { border-bottom: 0; }
+.li-main { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.li-side { flex: 0 0 auto; color: var(--text-dim); font-size: 11px; font-variant-numeric: tabular-nums; }
+.li-when { flex: 0 0 42px; color: var(--text-faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+/* semantic event/probe colours */
+.k-grabbed  { color: var(--info); }
+.k-imported { color: var(--ok); }
+.k-failed   { color: var(--bad); }
+.k-watched  { color: var(--accent); }
+.k-other    { color: var(--text-faint); }
+
+/* ---------- now playing ---------- */
+.np { display: flex; gap: var(--s3); align-items: center; padding: 7px 0; }
+.np-art { width: 40px; height: 60px; object-fit: cover; border-radius: var(--r-sm); background: var(--bg-sunken); flex: 0 0 auto; }
+.np-body { flex: 1; min-width: 0; }
+
+/* ---------- poster shelf ---------- */
+.shelf { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
+.ptile { flex: 0 0 auto; width: 100px; scroll-snap-align: start; }
+.poster {
+  width: 100px; height: 150px; object-fit: cover; border-radius: var(--r-sm);
+  background: var(--bg-sunken); border: 1px solid var(--line); display: block;
+}
+.pcap { font-size: 10px; color: var(--text-dim); margin-top: 4px; width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .foot { text-align: center; color: #484f58; font-size: 11px; margin-top: var(--s5); }
 .foot a { color: var(--info); text-decoration: none; }
 

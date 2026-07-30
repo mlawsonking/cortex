@@ -17,7 +17,7 @@
       "consumers": ["Services card"]
     },
     "storage": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "producer": "gen-dashboard.py gather_disks/gather_parity + pulse.forecast_gfull -> emit_ops.py",
       "cadence": "120s",
       "slo_seconds": 900,
@@ -67,7 +67,7 @@
       "consumers": ["Now playing card", "Recently added shelf", "household status page"]
     },
     "calendar": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "producer": "gen-dashboard.py gather_calendar -> emit_ops.py",
       "cadence": "120s",
       "slo_seconds": 1800,
