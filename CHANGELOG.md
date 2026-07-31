@@ -2,6 +2,44 @@
 
 Semver on the app; each contract is versioned independently in `contracts\registry.json`.
 
+## [P3] 2026-07-30 - Intelligence + actions, behind a kill-flag - awaiting GATE M2
+
+**Added** - 7 cards: `Oracle` (score + brief + HEVC reclaim, proposal-only), `HnR` (structurally read-only),
+`Upgrades` (4K advisor, one real download per click), `Passport`, `Recs`, `Butler`, `AskMood`. 19 cards over 16
+contracts. `Services` and `TonightPick` were refactored onto the shared `ActionBtn`.
+
+**Added - the action kill-flag.** Creating `wg\brain\ACTIONS-OFF` makes the server inject `0` into the
+`actions-enabled` meta tag, and every action disappears on the next load. No rebuild, no release flip, no restart,
+and the server's `/act` allow-list is untouched - it keeps refusing exactly what it always refused. The client
+flag fails CLOSED: anything other than a literal `"1"` is read-only, so a missing or malformed tag can never be
+read as permission.
+
+**Design decisions worth keeping**
+* `ActionBtn.svelte` is the single path to any verb, so the kill-flag, busy state and honest error reporting are
+  structural instead of per-card.
+* Ask & mood are gated by the kill-flag too. They mutate nothing, but they make the server run a model query, and
+  a "read-only mode" that still causes work on the box would make the banner's claim false.
+* No grab button on the Passport card: `/act/grab` needs a Radarr id and that contract carries only missing
+  TITLES. A button that guessed an id is a way to grab the wrong film.
+* No verb on the H&R card, ever. Any downloaded data - partial or complete - is a hit-and-run liability; the only
+  sanctioned removal test is `downloaded == 0`, and it lives server-side.
+* `blocked_disk` upgrade candidates render no button at all rather than a disabled one - nothing to click through.
+
+**Verified by effect**
+* 19 cards, zero console messages, no horizontal overflow. **The SNAPSHOT badge is now exercised on real data:**
+  4K advisor and Auteur passport both read `snapshot - 27.2d ago`, which is exactly how old those producers'
+  output is.
+* Kill-flag both directions: with `ACTIONS-OFF` present -> **0 buttons, 0 inputs**, banner shown, all 19 cards
+  still rendering live data; removed -> 12 buttons and 3 inputs return. Same bundle, no rebuild.
+* Security: `delete-torrent` / `remove` / `unmonitor` / `qbit-delete` all 404 against the allow-list; a real verb
+  with a bad nonce 401s; `/ask` returns a proposal-only answer.
+* `upgrade4k` deliberately NOT fired - each click is one real download and that belongs to Michael at M2.
+
+**Found, not caused:** `claude -p` on this box returns "Not logged in - Please run /login". That silently degrades
+the Oracle brief ("AI offline - deterministic score only"), Ask & mood ("ai unavailable") and the
+Media-Server-Daily-Audit task. Every one of them degrades HONESTLY rather than fabricating output, which is why it
+never looked broken. Fix is Michael running `claude setup-token` (already sitting in the Vikunja inbox as #29).
+
 ## [P2] 2026-07-30 - The ops board, and the end of the stale-parity bug class
 
 **Added** - 9 cards, all routed through `Card.svelte` so freshness stays structural: `Drives` (SMART),

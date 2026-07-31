@@ -193,6 +193,29 @@ body {
 .btn:disabled { opacity: 0.55; cursor: default; }
 .btn.ghost { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); }
 
+.field {
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--bg-sunken);
+  color: var(--text);
+  font: 13px var(--font);
+}
+.field:focus { outline: none; border-color: var(--info); }
+
+/* read-only banner: shown when the ACTIONS-OFF kill-flag is set, so the absence of buttons is explained rather
+   than looking like a broken page */
+.readonly {
+  grid-column: 1 / -1;
+  border: 1px solid rgba(210, 153, 34, 0.35);
+  background: rgba(210, 153, 34, 0.1);
+  color: var(--warn);
+  border-radius: var(--r);
+  padding: 10px var(--s4);
+  font-size: 13px;
+}
+
 /* ---------- hero (Tonight's Pick) ---------- */
 .hero {
   grid-column: 1 / -1;

@@ -15,6 +15,13 @@ function readNonce(doc = document) {
 
 let nonce = readNonce();
 
+/** Kill-flag, injected by the server from the presence of wg\brain\ACTIONS-OFF.
+ *  Fails CLOSED: anything other than an explicit "1" means read-only. A missing or malformed meta tag must never
+ *  be interpreted as permission to act. This only hides buttons - the server is the real authority and refuses
+ *  non-allow-listed verbs regardless of what the client believes. */
+export const actionsEnabled =
+  (document.querySelector('meta[name="actions-enabled"]')?.getAttribute('content') ?? '') === '1';
+
 async function refreshNonce() {
   const res = await fetch('/v2/index.html', { cache: 'no-store' });
   if (!res.ok) throw new Error('nonce refresh HTTP ' + res.status);

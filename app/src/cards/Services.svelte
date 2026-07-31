@@ -1,6 +1,6 @@
 <script>
   import Card from './Card.svelte';
-  import { act } from '../lib/act.js';
+  import ActionBtn from './ActionBtn.svelte';
 
   let { contract, now } = $props();
 
@@ -9,21 +9,6 @@
   // client gains nothing. Storage / VPN / torrent / OS services are absent by design and must stay absent.
   const FIXABLE = new Set(['Sonarr', 'Radarr', 'Prowlarr', 'Bazarr', 'Tautulli', 'FlareSolverr']);
 
-  let busy = $state('');
-  let msg = $state('');
-  let msgErr = $state(false);
-
-  async function fix(name) {
-    busy = name; msg = ''; msgErr = false;
-    try {
-      msg = await act('restart-service', 'svc=' + encodeURIComponent(name));
-      await contract.refresh();
-    } catch (e) {
-      msg = String(e?.message ?? e); msgErr = true;
-    } finally {
-      busy = '';
-    }
-  }
 </script>
 
 <Card title="Services" {contract} {now}>
@@ -39,9 +24,8 @@
           <span class="dot" class:ok={s.up} class:bad={!s.up}></span>
           <span class="row-name">{s.name}</span>
           {#if !s.up && FIXABLE.has(s.name)}
-            <button class="btn ghost" disabled={busy === s.name} onclick={() => fix(s.name)}>
-              {busy === s.name ? '...' : 'restart'}
-            </button>
+            <ActionBtn label="restart" verb="restart-service" body={'svc=' + encodeURIComponent(s.name)}
+                       busyLabel="..." done={() => contract.refresh()} />
           {/if}
         </div>
       {/each}
@@ -57,8 +41,5 @@
       {/if}
     </div>
 
-    {#if msg}
-      <div class="act-msg" class:err={msgErr} style:margin-top="8px">{msg}</div>
-    {/if}
   {/snippet}
 </Card>

@@ -7,6 +7,9 @@
     <!-- dashboard-server.py substitutes the live HMAC nonce into any .html it serves. Same mechanism the legacy
          page uses; the raw /act secret never reaches the browser. -->
     <meta name="act-nonce" content="__ACT_NONCE__" />
+    <!-- Kill-flag: creating wg\brain\ACTIONS-OFF makes the server serve 0 here and every action button in the app
+         goes read-only on the next load. No rebuild, no restart, and the server's /act allow-list is unchanged. -->
+    <meta name="actions-enabled" content="__ACTIONS_ENABLED__" />
     <meta name="theme-color" content="#0a0e14" />
     <link rel="manifest" href="/v2/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
