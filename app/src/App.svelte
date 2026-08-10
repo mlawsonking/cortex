@@ -20,6 +20,7 @@
   import Recs from './cards/Recs.svelte';
   import Butler from './cards/Butler.svelte';
   import AskMood from './cards/AskMood.svelte';
+  import Rhythm from './cards/Rhythm.svelte';
 
   // One clock for every age badge; one Contract per card. Nothing here reaches outside the origin.
   // Card order IS priority order, because on a phone this is a single column.
@@ -40,9 +41,10 @@
   const upgrades = new Contract('upgrades', 300000);
   const passport = new Contract('passport', 300000);
   const recs = new Contract('recs', 300000);
+  const rhythm = new Contract('rhythm', 300000);
 
   const all = [pick, oracle, services, storage, plexNow, pipeline, hnr, drives, library,
-               health, security, calendar, activity, upgrades, passport, recs];
+               health, security, calendar, activity, upgrades, passport, recs, rhythm];
 
   $effect(() => tick.start());
   $effect(() => {
@@ -69,6 +71,7 @@
   {/if}
 
   <TonightPick contract={pick} now={tick.now} />
+  <Rhythm contract={rhythm} now={tick.now} />
   <Oracle contract={oracle} now={tick.now} />
   <Services contract={services} now={tick.now} />
   <Storage contract={storage} now={tick.now} />
@@ -90,5 +93,5 @@
 </div>
 
 <div class="foot">
-  P3 &middot; 16 contracts rendered &middot; every card shows the age of its own data
+  P4 &middot; 17 contracts rendered &middot; every card shows the age of its own data
 </div>

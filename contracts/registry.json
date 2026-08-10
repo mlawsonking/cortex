@@ -116,6 +116,16 @@
       "schema": "smart.schema.json",
       "consumers": ["Drives card", "Protection & Health card"]
     },
+    "rhythm": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\rhythm_map.py (task Rhythm Map, daily 06:35)",
+      "cadence": "daily",
+      "slo_seconds": 93600,
+      "source": null,
+      "client": true,
+      "schema": "rhythm.schema.json",
+      "consumers": ["I1 Rhythm Map card", "schedule-aware Tonight's Pick (later engine pass)"]
+    },
     "tonight-pick": {
       "version": "1.1.0",
       "producer": "gen-dashboard.py gather_tonight (personal-recs.json + audit\\tonight-pick.json idx) -> emit_ops.py",
