@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "hnr-horizon",
+  "description": "I4 H&R Horizon: projected ratio-1.0 completion per private torrent below goal, from measured upload velocity. projected_days null = 'never at the current rate' (velocity under ~128 B/s or under 10 min of seed history) - a card must render that label, never a fake number. Read-only contract: no verb may ever hang off it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["totals", "trackers", "risk_feed"],
+  "properties": {
+    "totals": {
+      "type": "object", "additionalProperties": false,
+      "required": ["below_goal", "remaining_gb", "never_at_current_rate"],
+      "properties": {
+        "below_goal": { "type": "integer", "minimum": 0 },
+        "remaining_gb": { "type": "number", "minimum": 0 },
+        "never_at_current_rate": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "trackers": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["tracker", "below_goal", "remaining_gb", "on_track_week", "on_track_month", "beyond_month", "never_at_current_rate", "median_days"],
+        "properties": {
+          "tracker": { "type": "string" },
+          "below_goal": { "type": "integer", "minimum": 0 },
+          "remaining_gb": { "type": "number", "minimum": 0 },
+          "on_track_week": { "type": "integer", "minimum": 0 },
+          "on_track_month": { "type": "integer", "minimum": 0 },
+          "beyond_month": { "type": "integer", "minimum": 0 },
+          "never_at_current_rate": { "type": "integer", "minimum": 0 },
+          "median_days": { "type": ["number", "null"] }
+        }
+      }
+    },
+    "risk_feed": {
+      "type": "array", "maxItems": 25,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["name", "tracker", "ratio", "remaining_gb", "up_kbps", "projected_days", "state"],
+        "properties": {
+          "name": { "type": "string" },
+          "tracker": { "type": "string" },
+          "ratio": { "type": "number", "minimum": 0 },
+          "remaining_gb": { "type": "number", "minimum": 0 },
+          "up_kbps": { "type": "number", "minimum": 0 },
+          "projected_days": { "type": ["number", "null"] },
+          "state": { "type": "string" }
+        }
+      }
+    }
+  }
+}

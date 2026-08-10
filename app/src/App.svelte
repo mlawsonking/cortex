@@ -21,6 +21,8 @@
   import Butler from './cards/Butler.svelte';
   import AskMood from './cards/AskMood.svelte';
   import Rhythm from './cards/Rhythm.svelte';
+  import Ledger from './cards/Ledger.svelte';
+  import Horizon from './cards/Horizon.svelte';
 
   // One clock for every age badge; one Contract per card. Nothing here reaches outside the origin.
   // Card order IS priority order, because on a phone this is a single column.
@@ -42,9 +44,11 @@
   const passport = new Contract('passport', 300000);
   const recs = new Contract('recs', 300000);
   const rhythm = new Contract('rhythm', 300000);
+  const ledger = new Contract('ledger', 300000);
+  const horizon = new Contract('hnr-horizon', 300000);
 
   const all = [pick, oracle, services, storage, plexNow, pipeline, hnr, drives, library,
-               health, security, calendar, activity, upgrades, passport, recs, rhythm];
+               health, security, calendar, activity, upgrades, passport, recs, rhythm, ledger, horizon];
 
   $effect(() => tick.start());
   $effect(() => {
@@ -78,6 +82,8 @@
   <NowPlaying contract={plexNow} now={tick.now} />
   <Pipeline contract={pipeline} now={tick.now} />
   <HnR contract={hnr} now={tick.now} />
+  <Horizon contract={horizon} now={tick.now} />
+  <Ledger contract={ledger} now={tick.now} />
   <Drives contract={drives} now={tick.now} />
   <Library contract={library} now={tick.now} />
   <Health contract={health} now={tick.now} />
@@ -93,5 +99,5 @@
 </div>
 
 <div class="foot">
-  P4 &middot; 17 contracts rendered &middot; every card shows the age of its own data
+  P4 &middot; 19 contracts rendered &middot; every card shows the age of its own data
 </div>

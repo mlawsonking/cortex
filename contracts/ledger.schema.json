@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ledger",
+  "description": "I2 Compression Ledger: GB the x265 policy has saved (vs an x264 baseline at hevc_factor) and the ranked reclaim list of large x264 files, weighted by low rewatch odds. NUMBERS ONLY - the re-grab verb does not exist server-side and needs its own security review before any card may offer it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["hevc_factor", "hevc", "avc", "other", "saved_gb", "reclaim_candidates", "reclaim_potential_gb", "reclaim"],
+  "properties": {
+    "hevc_factor": { "type": "number", "minimum": 0.1, "maximum": 1 },
+    "hevc": { "type": "object", "additionalProperties": false, "required": ["count", "gb"],
+              "properties": { "count": { "type": "integer", "minimum": 0 }, "gb": { "type": "number", "minimum": 0 } } },
+    "avc": { "type": "object", "additionalProperties": false, "required": ["count", "gb"],
+             "properties": { "count": { "type": "integer", "minimum": 0 }, "gb": { "type": "number", "minimum": 0 } } },
+    "other": { "type": "object", "additionalProperties": false, "required": ["count", "gb"],
+               "properties": { "count": { "type": "integer", "minimum": 0 }, "gb": { "type": "number", "minimum": 0 } } },
+    "saved_gb": { "type": "number", "minimum": 0 },
+    "reclaim_candidates": { "type": "integer", "minimum": 0 },
+    "reclaim_potential_gb": { "type": "number", "minimum": 0 },
+    "reclaim": {
+      "type": "array", "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "year", "radarrId", "gb", "save_gb", "rating", "watched", "score"],
+        "properties": {
+          "title": { "type": "string" },
+          "year": { "type": ["integer", "null"] },
+          "radarrId": { "type": ["integer", "null"] },
+          "gb": { "type": "number", "minimum": 0 },
+          "save_gb": { "type": "number", "minimum": 0 },
+          "rating": { "type": ["integer", "number", "null"] },
+          "watched": { "type": "boolean" },
+          "score": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

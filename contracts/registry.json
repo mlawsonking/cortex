@@ -116,6 +116,26 @@
       "schema": "smart.schema.json",
       "consumers": ["Drives card", "Protection & Health card"]
     },
+    "ledger": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\compression_ledger.py (task Compression Ledger, weekly Sun 06:40)",
+      "cadence": "weekly",
+      "slo_seconds": 691200,
+      "source": null,
+      "client": true,
+      "schema": "ledger.schema.json",
+      "consumers": ["I2 Compression Ledger card"]
+    },
+    "hnr-horizon": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\hnr_horizon.py (task HnR Horizon, every 6h)",
+      "cadence": "6h",
+      "slo_seconds": 46800,
+      "source": null,
+      "client": true,
+      "schema": "hnr-horizon.schema.json",
+      "consumers": ["I4 H&R Horizon card"]
+    },
     "rhythm": {
       "version": "1.0.0",
       "producer": "brain\\producers\\rhythm_map.py (task Rhythm Map, daily 06:35)",
