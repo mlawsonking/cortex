@@ -146,6 +146,26 @@
       "schema": "rhythm.schema.json",
       "consumers": ["I1 Rhythm Map card", "schedule-aware Tonight's Pick (later engine pass)"]
     },
+    "dead-shelf": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\dead_shelf.py (task Dead Shelf, daily 06:50)",
+      "cadence": "daily",
+      "slo_seconds": 93600,
+      "source": null,
+      "client": true,
+      "schema": "dead-shelf.schema.json",
+      "consumers": ["I3 Dead Shelf card"]
+    },
+    "couple-compat": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\couple_compat.py (task Couple Compat, weekly Sun 06:45)",
+      "cadence": "weekly",
+      "slo_seconds": 691200,
+      "source": null,
+      "client": true,
+      "schema": "couple-compat.schema.json",
+      "consumers": ["I5 Couple Compatibility card"]
+    },
     "tonight-pick": {
       "version": "1.1.0",
       "producer": "gen-dashboard.py gather_tonight (personal-recs.json + audit\\tonight-pick.json idx) -> emit_ops.py",
@@ -158,9 +178,9 @@
     },
     "taste": {
       "version": "1.0.0",
-      "producer": "gen-dashboard.py gather_taste (trakt-ratings.json, 12h cache) -> emit_ops.py",
-      "cadence": "12h",
-      "slo_seconds": 93600,
+      "producer": "gen-dashboard.py gather_taste (trakt-ratings.json FROZEN SNAPSHOT - Trakt API VIP-gated 2026-08, see wg\\TRAKT-OFF) -> emit_ops.py",
+      "cadence": "snapshot",
+      "slo_seconds": null,
       "source": "wg\\audit\\trakt-ratings.json",
       "client": true,
       "schema": "taste.schema.json",
@@ -168,7 +188,7 @@
     },
     "recs": {
       "version": "1.0.0",
-      "producer": "personal-recs.ps1 (task Personal-Recs-Weekly, Sun 08:00)",
+      "producer": "personal-recs.py (TMDB engine, task Personal-Recs-Weekly, Sun 08:00; replaced personal-recs.ps1 2026-08-13)",
       "cadence": "weekly",
       "slo_seconds": 691200,
       "source": "wg\\audit\\personal-recs.json",
@@ -207,9 +227,9 @@
       "consumers": ["I5 Couple Compatibility", "I7 Taste Velocity"]
     },
     "unwatched-pool": {
-      "version": "1.0.0",
-      "producer": "get-unwatched-pool.py (manual / ad-hoc)",
-      "cadence": "manual",
+      "version": "1.1.0",
+      "producer": "get-unwatched-pool.py (task Unwatched Pool, weekly Sun 06:15; +addedAt/+actors 2026-08-13)",
+      "cadence": "weekly",
       "slo_seconds": 691200,
       "source": "wg\\audit\\unwatched-pool.json",
       "client": false,

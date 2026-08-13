@@ -13,7 +13,9 @@
       "title": { "type": "string" },
       "year": { "type": ["integer", "null"] },
       "rating": { "type": ["number", "integer", "null"] },
-      "genres": { "type": "array", "items": { "type": "string" } }
+      "genres": { "type": "array", "items": { "type": "string" } },
+      "addedAt": { "type": ["integer", "null"] },
+      "actors": { "type": "array", "items": { "type": "string" } }
     }
   }
 }

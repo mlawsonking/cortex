@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "couple-compat",
+  "description": "I5 Couple Compatibility: the venn of his LEARNED taste (michael persona genre weights, 0..1) over her RULE-DEFINED lanes (brain\\her-lanes.json) across the owned-but-unwatched pool. date_night is the cross-lane top slice. his_score is the mean of his genre weights over a film's genres - 0 means no overlap with his history, never 'unknown'. matched_any counts pool films that hit at least one lane; pool_total - matched_any is what the shelves deliberately skip. taste_source names which side of the fallback produced the weights, because a card must never imply learned taste when it only had rating means.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pool_total", "matched_any", "lanes", "date_night", "taste_source"],
+  "properties": {
+    "pool_total": { "type": "integer", "minimum": 50 },
+    "matched_any": { "type": "integer", "minimum": 0 },
+    "taste_source": { "type": "string", "enum": ["taste-graph", "ratings+radarr"] },
+    "lanes": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "label", "matches", "top"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "matches": { "type": "integer", "minimum": 0 },
+          "top": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "year", "tmdb", "ratingKey", "genres", "his_score"],
+              "properties": {
+                "title": { "type": "string" },
+                "year": { "type": ["integer", "null"] },
+                "tmdb": { "type": ["integer", "null"] },
+                "ratingKey": { "type": ["string", "null"] },
+                "genres": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
+                "his_score": { "type": "number", "minimum": 0, "maximum": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "date_night": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "year", "tmdb", "ratingKey", "lanes", "his_score"],
+        "properties": {
+          "title": { "type": "string" },
+          "year": { "type": ["integer", "null"] },
+          "tmdb": { "type": ["integer", "null"] },
+          "ratingKey": { "type": ["string", "null"] },
+          "lanes": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "his_score": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    }
+  }
+}

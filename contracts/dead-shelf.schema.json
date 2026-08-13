@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "dead-shelf",
+  "description": "I3 Dead Shelf: curation debt made visible. The upstream unwatched-pool is already never-watched / never-rated / year>=1987; this contract only AGES it. settling = on the shelf under 60 days (counted, never called debt). unknown_age = entries whose addedAt cannot be trusted (null, non-positive, future, or predating the film's own release year) - counted, excluded from every bucket and from oldest, never guessed at. dead_total is the sum of the three buckets and dead_pct is its share of pool_total. total_gb / gb are OPTIONAL and appear only when library-index really carries per-title sizes joinable by tmdb; today it does not, so no sizes are emitted rather than estimated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pool_total", "settling", "unknown_age", "buckets", "dead_total", "dead_pct", "oldest"],
+  "properties": {
+    "pool_total": { "type": "integer", "minimum": 0 },
+    "settling": { "type": "integer", "minimum": 0 },
+    "unknown_age": { "type": "integer", "minimum": 0 },
+    "buckets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["d60_180", "d180_365", "over_365"],
+      "properties": {
+        "d60_180": { "type": "object", "additionalProperties": false, "required": ["count"],
+                     "properties": { "count": { "type": "integer", "minimum": 0 },
+                                     "total_gb": { "type": "number", "minimum": 0 } } },
+        "d180_365": { "type": "object", "additionalProperties": false, "required": ["count"],
+                      "properties": { "count": { "type": "integer", "minimum": 0 },
+                                      "total_gb": { "type": "number", "minimum": 0 } } },
+        "over_365": { "type": "object", "additionalProperties": false, "required": ["count"],
+                      "properties": { "count": { "type": "integer", "minimum": 0 },
+                                      "total_gb": { "type": "number", "minimum": 0 } } }
+      }
+    },
+    "dead_total": { "type": "integer", "minimum": 0 },
+    "dead_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+    "oldest": {
+      "type": "array", "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "year", "days", "genres", "tmdb", "ratingKey"],
+        "properties": {
+          "title": { "type": "string" },
+          "year": { "type": ["integer", "null"] },
+          "days": { "type": "integer", "minimum": 0 },
+          "genres": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
+          "tmdb": { "type": ["integer", "null"] },
+          "ratingKey": { "type": ["string", "null"] },
+          "gb": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

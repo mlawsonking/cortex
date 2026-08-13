@@ -1,0 +1,39 @@
+{
+  "_readme": [
+    "HER LANES - the wife's side of the I5 Couple Compatibility venn, RULE-DEFINED rather than learned.",
+    "The household shares one Plex account, so there is no per-person history to mine for her; taste-graph only",
+    "knows 'michael' and 'kids'. Rather than invent a persona out of thin air, her side is this hand-written",
+    "config. Edit it freely - couple_compat.py re-reads it every run and never writes back.",
+    "",
+    "MATCHER (producers\\couple_compat.py): a lane matches a film when EVERY non-empty condition below holds.",
+    "An empty (or absent) list is 'no opinion' and is skipped, so a lane with only actors_any is purely a",
+    "cast lane. Genre and actor names are matched case-insensitively against the Plex genres[]/actors[] on each",
+    "unwatched-pool item (actors are Plex's top-billed cast only, so a deep-cut supporting role will not match).",
+    "  genres_all : every listed genre must be present on the film",
+    "  genres_any : at least one listed genre must be present",
+    "  actors_any : at least one listed actor must be in the billed cast"
+  ],
+  "lanes": [
+    {
+      "key": "romance",
+      "label": "Romance",
+      "genres_all": [],
+      "genres_any": ["Romance"],
+      "actors_any": []
+    },
+    {
+      "key": "rom-com",
+      "label": "Rom-com",
+      "genres_all": ["Romance", "Comedy"],
+      "genres_any": [],
+      "actors_any": []
+    },
+    {
+      "key": "neeson-thrillers",
+      "label": "Neeson thrillers",
+      "genres_all": [],
+      "genres_any": ["Thriller", "Action", "Crime"],
+      "actors_any": ["Liam Neeson"]
+    }
+  ]
+}
