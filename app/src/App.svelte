@@ -23,7 +23,6 @@
   import Rhythm from './cards/Rhythm.svelte';
   import Ledger from './cards/Ledger.svelte';
   import Horizon from './cards/Horizon.svelte';
-  import DeadShelf from './cards/DeadShelf.svelte';
   import CoupleCompat from './cards/CoupleCompat.svelte';
 
   // One clock for every age badge; one Contract per card. Nothing here reaches outside the origin.
@@ -48,12 +47,11 @@
   const rhythm = new Contract('rhythm', 300000);
   const ledger = new Contract('ledger', 300000);
   const horizon = new Contract('hnr-horizon', 300000);
-  const deadShelf = new Contract('dead-shelf', 300000);
   const coupleCompat = new Contract('couple-compat', 300000);
 
   const all = [pick, oracle, services, storage, plexNow, pipeline, hnr, drives, library,
                health, security, calendar, activity, upgrades, passport, recs, rhythm, ledger, horizon,
-               deadShelf, coupleCompat];
+               coupleCompat];
 
   $effect(() => tick.start());
   $effect(() => {
@@ -90,7 +88,6 @@
   <HnR contract={hnr} now={tick.now} />
   <Horizon contract={horizon} now={tick.now} />
   <Ledger contract={ledger} now={tick.now} />
-  <DeadShelf contract={deadShelf} now={tick.now} />
   <Drives contract={drives} now={tick.now} />
   <Library contract={library} now={tick.now} />
   <Health contract={health} now={tick.now} />
@@ -106,5 +103,5 @@
 </div>
 
 <div class="foot">
-  P4 &middot; 21 contracts rendered &middot; every card shows the age of its own data
+  P4 &middot; 20 contracts rendered &middot; every card shows the age of its own data
 </div>

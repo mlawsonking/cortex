@@ -1,50 +1,45 @@
 <script>
-  // I4 H&R Horizon - projected ratio-1.0 dates per tracker from measured upload velocity. Read-only forever,
-  // like the sentinel: visibility, not verbs. "never at current rate" is an honest label for a velocity too
-  // low to project - especially common while historic averages still reflect the dead-inbound era.
+  // I4 H&R Horizon, problems-only (M3 verdict 2026-08-14): Michael does not want ratio-progress tables -
+  // only "is any under-ratio torrent NOT seeding properly". The contract still carries the full trajectory
+  // data (trackers/risk_feed) for anything else that wants it; this card renders exceptions or an all-clear.
+  // Read-only forever, like the sentinel: visibility, not verbs. Announce-silence is invisible to qBit state;
+  // the audit's check-hnr-exposure self-heal owns that class and pushes on it.
   import Card from './Card.svelte';
 
   let { contract, now } = $props();
-
-  function days(d) {
-    if (d === null || d === undefined) return 'never @ rate';
-    if (d < 1) return '<1d';
-    if (d <= 60) return Math.round(d) + 'd';
-    return Math.round(d / 30) + 'mo';
-  }
 </script>
 
-<Card title="H&amp;R horizon" {contract} {now} span={true}>
+<Card title="H&amp;R horizon" {contract} {now}>
   {#snippet body(d)}
-    <div class="stats" style:margin-bottom="10px">
-      <div class="stat"><div class="n">{d.totals.below_goal}</div><div class="l">below 1.0 goal</div></div>
-      <div class="stat"><div class="n">{(d.totals.remaining_gb / 1000).toFixed(1)} TB</div><div class="l">upload remaining</div></div>
-      <div class="stat"><div class="n" class:dim={!d.totals.never_at_current_rate}>{d.totals.never_at_current_rate}</div><div class="l">never @ current rate</div></div>
-    </div>
-
-    {#each d.trackers.slice(0, 6) as t (t.tracker)}
-      <div class="li">
-        <span class="li-main">{t.tracker}</span>
-        <span class="li-side">
-          {t.below_goal} below &middot; {t.remaining_gb.toFixed(0)} GB left
-          &middot; ≤7d: {t.on_track_week} &middot; ≤30d: {t.on_track_month}
-          &middot; <span class={t.never_at_current_rate ? 'k-failed' : ''}>{t.never_at_current_rate} stalled</span>
-        </span>
+    {#if (d.problems ?? []).length === 0}
+      <div class="allclear">
+        <span class="ok-dot"></span>
+        all under-ratio torrents are seeding properly
       </div>
-    {/each}
-
-    <div class="muted" style:margin="8px 0 4px">highest-risk (slowest, most remaining):</div>
-    {#each d.risk_feed.slice(0, 6) as r, i (r.name + i)}
-      <div class="li">
-        <span class="li-main">{r.name}</span>
-        <span class="li-side">{r.tracker.split('.')[0]} &middot; {r.ratio.toFixed(2)} &middot; {r.remaining_gb.toFixed(1)} GB &middot;
-          <span class={r.projected_days === null ? 'k-failed' : ''}>{days(r.projected_days)}</span></span>
+      <div class="muted">
+        {d.totals.below_goal} below 1.0 goal, {(d.totals.remaining_gb / 1000).toFixed(1)} TB to repay -
+        all actively announcing/seeding; nothing needs you
       </div>
-    {/each}
-
-    <div class="muted" style:margin-top="8px">
-      velocities are lifetime averages &mdash; they still carry the no-inbound era; expect projections to improve
-      now the forwarded port is live &middot; read-only by design, the exposure self-heal handles silent torrents
-    </div>
+    {:else}
+      <div class="probhead k-failed">{d.problems.length} under-ratio torrent{d.problems.length === 1 ? '' : 's'} NOT seeding properly</div>
+      {#each d.problems as p, i (p.name + i)}
+        <div class="prow">
+          <div class="ptitle">{p.name}</div>
+          <div class="pmeta muted">{p.tracker.split('.')[0]} &middot; ratio {p.ratio.toFixed(2)} &middot; {p.remaining_gb.toFixed(1)} GB owed &middot; state: <span class="k-failed">{p.state}</span></div>
+        </div>
+      {/each}
+      <div class="muted" style:margin-top="6px">
+        fix path: resume/force-start in qBit, or wait for the audit self-heal cycle (it force-starts silent ones)
+      </div>
+    {/if}
   {/snippet}
 </Card>
+
+<style>
+  .allclear { display: flex; align-items: center; gap: 8px; padding: 4px 0 6px; }
+  .ok-dot { width: 9px; height: 9px; border-radius: 50%; background: #3fb950; display: inline-block; }
+  .probhead { margin-bottom: 6px; }
+  .prow { padding: 4px 0; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+  .ptitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pmeta { font-size: 0.85em; }
+</style>

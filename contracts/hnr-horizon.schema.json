@@ -12,7 +12,24 @@
       "properties": {
         "below_goal": { "type": "integer", "minimum": 0 },
         "remaining_gb": { "type": "number", "minimum": 0 },
-        "never_at_current_rate": { "type": "integer", "minimum": 0 }
+        "never_at_current_rate": { "type": "integer", "minimum": 0 },
+        "problems": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "problems": {
+      "type": "array", "maxItems": 25,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["name", "tracker", "ratio", "remaining_gb", "up_kbps", "projected_days", "state"],
+        "properties": {
+          "name": { "type": "string" },
+          "tracker": { "type": "string" },
+          "ratio": { "type": "number", "minimum": 0 },
+          "remaining_gb": { "type": "number", "minimum": 0 },
+          "up_kbps": { "type": "number", "minimum": 0 },
+          "projected_days": { "type": ["number", "null"] },
+          "state": { "type": "string" }
+        }
       }
     },
     "trackers": {

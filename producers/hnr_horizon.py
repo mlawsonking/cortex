@@ -75,15 +75,29 @@ def main():
     # ranked risk feed: 'never' first (worst), then longest projections
     rows.sort(key=lambda r: (r["projected_days"] is not None, -(r["projected_days"] or 0), -r["remaining_gb"]))
 
+    # v1.1.0 (M3 feedback 2026-08-14): Michael only wants to KNOW about a below-goal torrent when it is not
+    # seeding properly. "Not seeding properly" is judged from qBit state alone (honest - announce silence is
+    # invisible here; check-hnr-exposure --fix owns that and the audit alerts on it):
+    #   actively seeding = uploading / stalledUP (no peers right now is normal) / forcedUP
+    #   still in flight  = any downloading/checking/queuedDL state (not a seeding failure yet)
+    #   PROBLEM          = pausedUP / stoppedUP / queuedUP (not announcing) / error / missingFiles / unknown
+    SEEDING_OK = {"uploading", "stalledUP", "forcedUP"}
+    IN_FLIGHT = {"downloading", "stalledDL", "forcedDL", "metaDL", "queuedDL", "allocating",
+                 "checkingDL", "checkingUP", "checkingResumeData", "moving"}
+    problems = [r for r in rows if r["state"] not in SEEDING_OK and r["state"] not in IN_FLIGHT]
+
     data = {
         "totals": {"below_goal": len(rows), "remaining_gb": round(sum(r["remaining_gb"] for r in rows), 1),
-                   "never_at_current_rate": sum(1 for r in rows if r["projected_days"] is None)},
+                   "never_at_current_rate": sum(1 for r in rows if r["projected_days"] is None),
+                   "problems": len(problems)},
         "trackers": trackers,
         "risk_feed": rows[:25],
+        "problems": problems[:25],
     }
     path = bc.write_contract("hnr-horizon", data)
-    print("hnr-horizon written: %s (%d below goal, %.0f GB remaining, %d never-at-current-rate)"
-          % (path, len(rows), data["totals"]["remaining_gb"], data["totals"]["never_at_current_rate"]))
+    print("hnr-horizon written: %s (%d below goal, %.0f GB remaining, %d never-at-current-rate, %d PROBLEMS)"
+          % (path, len(rows), data["totals"]["remaining_gb"], data["totals"]["never_at_current_rate"],
+             len(problems)))
     return 0
 
 

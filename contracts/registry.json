@@ -127,8 +127,8 @@
       "consumers": ["I2 Compression Ledger card"]
     },
     "hnr-horizon": {
-      "version": "1.0.0",
-      "producer": "brain\\producers\\hnr_horizon.py (task HnR Horizon, every 6h)",
+      "version": "1.1.0",
+      "producer": "brain\\producers\\hnr_horizon.py (task HnR Horizon, every 6h; +problems exceptions view per M3 2026-08-14)",
       "cadence": "6h",
       "slo_seconds": 46800,
       "source": null,
@@ -148,13 +148,13 @@
     },
     "dead-shelf": {
       "version": "1.0.0",
-      "producer": "brain\\producers\\dead_shelf.py (task Dead Shelf, daily 06:50)",
-      "cadence": "daily",
-      "slo_seconds": 93600,
+      "producer": "brain\\producers\\dead_shelf.py (CUT at gate M3 2026-08-14: card removed, task Dead Shelf disabled; producer retained for reversibility)",
+      "cadence": "manual",
+      "slo_seconds": null,
       "source": null,
-      "client": true,
+      "client": false,
       "schema": "dead-shelf.schema.json",
-      "consumers": ["I3 Dead Shelf card"]
+      "consumers": []
     },
     "couple-compat": {
       "version": "1.0.0",
