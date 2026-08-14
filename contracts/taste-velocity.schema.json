@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "taste-velocity",
+  "description": "I7 Taste Velocity: per-genre share of PLAYS in the rolling last window_days, against the same share over the whole Plex play history. delta = recent_share - lifetime_share; positive is heating, negative is cooling. Rows are sorted by |delta| descending and capped at 14. Source is watch behaviour, NOT ratings - the Trakt ratings file on this box is a frozen snapshot and could only ever produce a delta of zero. plays_recent and plays_lifetime are the genre-MAPPED play counts that are the actual denominators (unmapped plays are reported in note, never hidden); a title carries several genres, so shares do not sum to 1. plays_recent is the honest sample size and a card must surface it - the household shares one Plex account, so kids' viewing is inside these numbers, which is exactly what note exists to say.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window_days", "plays_recent", "plays_lifetime", "genres", "note"],
+  "properties": {
+    "window_days": { "type": "integer", "minimum": 1 },
+    "plays_recent": { "type": "integer", "minimum": 5 },
+    "plays_lifetime": { "type": "integer", "minimum": 1 },
+    "genres": {
+      "type": "array",
+      "maxItems": 14,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["genre", "recent_share", "lifetime_share", "delta"],
+        "properties": {
+          "genre": { "type": "string", "minLength": 1 },
+          "recent_share": { "type": "number", "minimum": 0, "maximum": 1 },
+          "lifetime_share": { "type": "number", "minimum": 0, "maximum": 1 },
+          "delta": { "type": "number", "minimum": -1, "maximum": 1 }
+        }
+      }
+    },
+    "note": { "type": "string", "minLength": 1, "maxLength": 1600 }
+  }
+}

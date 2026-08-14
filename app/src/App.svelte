@@ -24,6 +24,11 @@
   import Ledger from './cards/Ledger.svelte';
   import Horizon from './cards/Horizon.svelte';
   import CoupleCompat from './cards/CoupleCompat.svelte';
+  import GapRadar from './cards/GapRadar.svelte';
+  import TasteVelocity from './cards/TasteVelocity.svelte';
+  import AnomalyFeed from './cards/AnomalyFeed.svelte';
+  import Wrapped from './cards/Wrapped.svelte';
+  import CostQuality from './cards/CostQuality.svelte';
 
   // One clock for every age badge; one Contract per card. Nothing here reaches outside the origin.
   // Card order IS priority order, because on a phone this is a single column.
@@ -48,10 +53,15 @@
   const ledger = new Contract('ledger', 300000);
   const horizon = new Contract('hnr-horizon', 300000);
   const coupleCompat = new Contract('couple-compat', 300000);
+  const gapRadar = new Contract('gap-radar', 300000);
+  const tasteVelocity = new Contract('taste-velocity', 300000);
+  const anomalyFeed = new Contract('anomaly-feed', 300000);
+  const wrapped = new Contract('wrapped', 300000);
+  const costQuality = new Contract('cost-of-quality', 300000);
 
   const all = [pick, oracle, services, storage, plexNow, pipeline, hnr, drives, library,
                health, security, calendar, activity, upgrades, passport, recs, rhythm, ledger, horizon,
-               coupleCompat];
+               coupleCompat, gapRadar, tasteVelocity, anomalyFeed, wrapped, costQuality];
 
   $effect(() => tick.start());
   $effect(() => {
@@ -81,13 +91,16 @@
   <Rhythm contract={rhythm} now={tick.now} />
   <CoupleCompat contract={coupleCompat} now={tick.now} />
   <Oracle contract={oracle} now={tick.now} />
+  <Wrapped contract={wrapped} now={tick.now} />
   <Services contract={services} now={tick.now} />
   <Storage contract={storage} now={tick.now} />
   <NowPlaying contract={plexNow} now={tick.now} />
   <Pipeline contract={pipeline} now={tick.now} />
   <HnR contract={hnr} now={tick.now} />
   <Horizon contract={horizon} now={tick.now} />
+  <AnomalyFeed contract={anomalyFeed} now={tick.now} />
   <Ledger contract={ledger} now={tick.now} />
+  <CostQuality contract={costQuality} now={tick.now} />
   <Drives contract={drives} now={tick.now} />
   <Library contract={library} now={tick.now} />
   <Health contract={health} now={tick.now} />
@@ -98,10 +111,12 @@
   <Activity contract={activity} now={tick.now} />
   <Upgrades contract={upgrades} now={tick.now} />
   <Passport contract={passport} now={tick.now} />
+  <GapRadar contract={gapRadar} now={tick.now} />
+  <TasteVelocity contract={tasteVelocity} now={tick.now} />
   <Recs contract={recs} now={tick.now} />
   <RecentlyAdded contract={plexNow} now={tick.now} />
 </div>
 
 <div class="foot">
-  P4 &middot; 20 contracts rendered &middot; every card shows the age of its own data
+  P4 complete &middot; 25 contracts rendered &middot; every card shows the age of its own data
 </div>

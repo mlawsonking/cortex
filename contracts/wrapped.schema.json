@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "wrapped",
+  "description": "I9 Monthly Wrapped: a plain-text narrative brief over the OTHER insight contracts' numbers, written by claude -p on the Claude Code SUBSCRIPTION (never a metered API key), one call per monthly run. model_generated is const true because there is no deterministic fallback: if the model fails, the producer exits nonzero and writes nothing, so a wrapped contract that exists was always model-written. 'month' is the month the brief was PRODUCED in, not a calendar-month aggregation - the source contracts are current-state snapshots and rolling windows (rhythm is a 90-day heat map), and the prompt forbids attributing figures to a calendar month. facts_used names only the contracts that actually reached the prompt. Read-only contract: no verb may ever hang off it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["month", "narrative", "model_generated", "facts_used"],
+  "properties": {
+    "month": {
+      "description": "YYYY-MM the brief was produced for.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+    },
+    "narrative": {
+      "description": "The brief itself: plain ASCII prose, paragraphs separated by a blank line. Rendered as-is; a card must not reflow or summarise it.",
+      "type": "string",
+      "minLength": 200,
+      "maxLength": 6000
+    },
+    "model_generated": {
+      "description": "Always true - see the contract description. A false here would mean someone added a fallback narrative, which this design forbids.",
+      "type": "boolean",
+      "const": true
+    },
+    "facts_used": {
+      "description": "Contract names whose data reached the prompt. A contract absent from this list contributed nothing to the narrative.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 24,
+      "items": { "type": "string", "minLength": 1, "maxLength": 40 }
+    }
+  }
+}

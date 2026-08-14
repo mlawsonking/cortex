@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "anomaly-feed",
+  "description": "I8 Anomaly Feed: cross-system CLUSTERING that no single system's health check can see - grab/import failures concentrating on one indexer (Radarr + Sonarr history pooled over 48h, since indexers are shared through Prowlarr), and incomplete downloads stalling/erroring on one tracker. Actionless v1: this contract reports, it never carries a verb. all_clear may only be true when anomalies is empty AND every checked source answered - a source that failed makes 'clear' unclaimable, and the failed source is listed rather than hidden. An empty anomalies array with a false ok somewhere is a partial read, not a green light.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_sources", "anomalies", "all_clear"],
+  "properties": {
+    "checked_sources": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "ok"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "ok": { "type": "boolean" },
+          "detail": {
+            "type": "string",
+            "description": "What was actually read (record counts, window size, unattributable failures) or, when ok is false, the reason the source could not be read. Never omitted in practice; the card renders it as the sources-checked note.",
+            "maxLength": 400
+          }
+        }
+      }
+    },
+    "anomalies": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "subject", "severity", "evidence", "count"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["indexer-failures", "stall-cluster", "error-state"],
+            "description": "indexer-failures = >=4 failures in 48h AND failure share >=3x that indexer's share of attributed events. stall-cluster = >=5 incomplete downloads on one tracker host in stalledDL/error/missingFiles, or >=3 that are ALL errored/missingFiles. error-state = torrents in error/missingFiles grouped by tracker."
+          },
+          "subject": { "type": "string", "minLength": 1, "description": "Indexer name or tracker host the cluster points at." },
+          "severity": { "type": "string", "enum": ["warn", "info"] },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400,
+            "description": "The counts the verdict was computed from, in words. A card must show this - a bare 'anomaly' with no numbers is the plausible-looking lie this repo exists to prevent."
+          },
+          "count": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "all_clear": { "type": "boolean" }
+  }
+}

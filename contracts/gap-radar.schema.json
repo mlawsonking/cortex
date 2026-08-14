@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "gap-radar",
+  "description": "I6 Gap Radar: how close the library is to completing an auteur's canonical filmography or a franchise. Auteur rows reuse the curated loyalties and canonical TITLE lists inside wg\\audit\\passport.ps1 (read-only - one auteur canon, not two), but re-resolve every TMDB id from the director's real TMDB directing credits, because a large share of that map's ids point at a different film than their label; totals.curated_ids_wrong counts them. Franchise rows come from Radarr's collection field plus a TMDB collection lookup, only for collections the library already owns >= 2 films of. THE 1987 YEAR FLOOR IS APPLIED IN THE PRODUCER: pre-1987 films are excluded from every total AND every missing list, so owned/total is the complete truth for the set being scored - a card must never re-filter these numbers. 'owned' means a file exists on disk, so a film parked in Radarr still counts as a gap (missing[].in_radarr says which). auteurs[].unresolved counts curated titles that matched no credit and are outside BOTH owned and total. Rows are ranked closest-to-complete first; franchises that are complete, or have fewer than 2 post-floor films, are omitted entirely.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["year_floor", "auteur_source", "auteurs", "franchises", "totals", "generated_note"],
+  "properties": {
+    "year_floor": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "auteur_source": { "type": "string", "minLength": 1 },
+    "auteurs": {
+      "type": "array", "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "owned", "total", "pct", "unresolved", "missing"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "owned": { "type": "integer", "minimum": 0 },
+          "total": { "type": "integer", "minimum": 1 },
+          "pct": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "unresolved": { "type": "integer", "minimum": 0 },
+          "missing": {
+            "type": "array", "maxItems": 5,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "year", "tmdb", "in_radarr"],
+              "properties": {
+                "title": { "type": "string", "minLength": 1 },
+                "year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+                "tmdb": { "type": "integer", "minimum": 1 },
+                "in_radarr": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "franchises": {
+      "type": "array", "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "tmdb", "owned", "total", "pct", "missing"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "tmdb": { "type": "integer", "minimum": 1 },
+          "owned": { "type": "integer", "minimum": 0 },
+          "total": { "type": "integer", "minimum": 2 },
+          "pct": { "type": "integer", "minimum": 0, "maximum": 99 },
+          "missing": {
+            "type": "array", "minItems": 1, "maxItems": 5,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "year", "tmdb", "in_radarr"],
+              "properties": {
+                "title": { "type": "string", "minLength": 1 },
+                "year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+                "tmdb": { "type": "integer", "minimum": 1 },
+                "in_radarr": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["auteurs_tracked", "auteur_films", "franchise_candidates", "franchises_incomplete",
+                   "tmdb_collections_skipped", "films_below_floor", "titles_unresolved",
+                   "directors_unresolved", "curated_ids_wrong"],
+      "properties": {
+        "auteurs_tracked": { "type": "integer", "minimum": 0 },
+        "auteur_films": { "type": "integer", "minimum": 0 },
+        "franchise_candidates": { "type": "integer", "minimum": 0 },
+        "franchises_incomplete": { "type": "integer", "minimum": 0 },
+        "tmdb_collections_skipped": { "type": "integer", "minimum": 0 },
+        "films_below_floor": { "type": "integer", "minimum": 0 },
+        "titles_unresolved": { "type": "integer", "minimum": 0 },
+        "directors_unresolved": { "type": "integer", "minimum": 0 },
+        "curated_ids_wrong": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "generated_note": { "type": "string", "minLength": 1 }
+  }
+}

@@ -166,6 +166,56 @@
       "schema": "couple-compat.schema.json",
       "consumers": ["I5 Couple Compatibility card"]
     },
+    "gap-radar": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\gap_radar.py (task Gap Radar, weekly Sun 07:00)",
+      "cadence": "weekly",
+      "slo_seconds": 691200,
+      "source": null,
+      "client": true,
+      "schema": "gap-radar.schema.json",
+      "consumers": ["I6 Gap Radar card"]
+    },
+    "taste-velocity": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\taste_velocity.py (task Taste Velocity, weekly Sun 07:05)",
+      "cadence": "weekly",
+      "slo_seconds": 691200,
+      "source": null,
+      "client": true,
+      "schema": "taste-velocity.schema.json",
+      "consumers": ["I7 Taste Velocity card"]
+    },
+    "anomaly-feed": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\anomaly_feed.py (task Anomaly Feed, every 6h)",
+      "cadence": "6h",
+      "slo_seconds": 46800,
+      "source": null,
+      "client": true,
+      "schema": "anomaly-feed.schema.json",
+      "consumers": ["I8 Anomaly Feed card"]
+    },
+    "wrapped": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\monthly_wrapped.py (task Monthly Wrapped, monthly 1st 07:15; claude -p narrative, subscription)",
+      "cadence": "monthly",
+      "slo_seconds": 3024000,
+      "source": null,
+      "client": true,
+      "schema": "wrapped.schema.json",
+      "consumers": ["I9 Monthly Wrapped card"]
+    },
+    "cost-of-quality": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\cost_quality.py (task Cost of Quality, weekly Sun 07:10)",
+      "cadence": "weekly",
+      "slo_seconds": 691200,
+      "source": null,
+      "client": true,
+      "schema": "cost-of-quality.schema.json",
+      "consumers": ["I10 Cost of Quality card"]
+    },
     "tonight-pick": {
       "version": "1.1.0",
       "producer": "gen-dashboard.py gather_tonight (personal-recs.json + audit\\tonight-pick.json idx) -> emit_ops.py",
