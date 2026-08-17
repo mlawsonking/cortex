@@ -43,10 +43,17 @@
       </div>
     {:else}
       {@const p = contract.data.pick}
-      <div class="hero-title">{p.title} <span class="hero-year">{p.year ?? ''}</span></div>
+      <div class="hero-title">
+        {p.title} <span class="hero-year">{p.year ?? ''}</span>
+        {#if p.mode === 'date-night'}<span class="dn-chip">Friday date night</span>{/if}
+      </div>
       <div class="hero-why">
-        {#if p.why}because you loved <strong>{p.why}</strong>{:else}tuned to your taste{/if}
-        {#if p.genres}<span class="muted"> · {p.genres}</span>{/if}
+        {#if p.mode === 'date-night'}owned &amp; unwatched, fits her lanes, ranked by your taste
+          {#if p.genres}<span class="muted"> · {p.genres}</span>{/if}
+        {:else}
+          {#if p.why}because you loved <strong>{p.why}</strong>{:else}tuned to your taste{/if}
+          {#if p.genres}<span class="muted"> · {p.genres}</span>{/if}
+        {/if}
       </div>
       <div class="hero-actions">
         <ActionBtn label="reroll" verb="reroll" busyLabel="rerolling..." done={() => contract.refresh()}
@@ -56,3 +63,20 @@
     {/if}
   </div>
 </section>
+
+<style>
+  .dn-chip {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    margin-left: 8px;
+    border-radius: 999px;
+    color: var(--accent);
+    background: rgba(188, 140, 255, 0.14);
+    border: 1px solid rgba(188, 140, 255, 0.35);
+    vertical-align: middle;
+  }
+</style>

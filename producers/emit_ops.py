@@ -280,13 +280,18 @@ def _emit_tonight(d):
     pick = None
     if tn:
         art = _s(tn.get("art"))
-        tmdb = None
-        if rec is not None and _s(rec.get("title")) == _s(tn.get("title")):
+        # v1.2.0: gather_tonight now carries tmdb/mode/pool itself (needed since Friday date-night picks come
+        # from couple-compat, not personal-recs, so the old title-crosscheck against recs would miss them).
+        tmdb = tn.get("tmdb") if isinstance(tn.get("tmdb"), int) else None
+        if tmdb is None and rec is not None and _s(rec.get("title")) == _s(tn.get("title")):
             tmdb = rec.get("tmdb") if isinstance(rec.get("tmdb"), int) else None
+        if isinstance(tn.get("pool"), int) and tn.get("pool") > 0:
+            pool = tn["pool"]
         pick = {"title": _s(tn.get("title")),
                 "year": tn.get("year") if isinstance(tn.get("year"), int) else _s(tn.get("year")),
                 "why": _s(tn.get("why")), "genres": _s(tn.get("genres")),
                 "tmdb": tmdb,
+                "mode": _s(tn.get("mode")) or "discover",
                 "art_url": art,
                 "art_external": art.startswith("http"),
                 "art_local": _cache_art(tmdb, art)}

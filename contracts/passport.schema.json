@@ -1,11 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "passport",
-  "description": "Wrapped passport.ps1 output: per-auteur filmography completion (seen / owned / parked / missing). NO scheduled task produces this - slo_seconds:null, snapshot date rendered. The 1987 year-floor and other taste rules are the producer's job; a card must not re-filter and quietly disagree with it.",
+  "description": "Wrapped passport.ps1 output: per-auteur filmography completion (seen / owned / parked / missing). NO scheduled task produces this - slo_seconds:null, snapshot date rendered. The 1987 year-floor and other taste rules are the producer's job (enforced there since the 2026-08-16 id repair; pre-floor canon films are excluded from totals and missing[]); a card must not re-filter and quietly disagree with it.",
   "type": "object",
   "additionalProperties": true,
   "required": ["directors"],
   "properties": {
+    "year_floor": { "type": "integer", "description": "The hard taste floor the producer applied (1987)." },
+    "films_below_floor": { "type": "integer", "minimum": 0, "description": "Curated canon films excluded because they predate year_floor." },
+    "films_undated": { "type": "integer", "minimum": 0, "description": "Curated films dropped because the producer's year table has no entry for them - never guessed." },
+    "generated_note": { "type": "string" },
     "directors": {
       "type": "array",
       "items": {

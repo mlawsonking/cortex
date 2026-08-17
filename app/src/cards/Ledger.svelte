@@ -1,7 +1,10 @@
 <script>
-  // I2 Compression Ledger. Numbers only, deliberately: the "re-grab compact" verb does not exist server-side,
-  // and a new verb needs its own security review + Michael's approval before any card may offer it.
+  // I2 Compression Ledger. Verb 'encode-next' (M3-approved 2026-08-14): queues ONE reclaim candidate to the
+  // front of tonight's local re-encode run. Deliberately NOT a re-grab - a new download would create fresh H&R
+  // obligations; the nightly compactor re-encodes the library copy instead. Ordering only: the server validates
+  // the id against the CURRENT reclaim list and every re-encode safety gate still applies unchanged.
   import Card from './Card.svelte';
+  import ActionBtn from './ActionBtn.svelte';
 
   let { contract, now } = $props();
 
@@ -26,13 +29,15 @@
       <div class="li">
         <span class="li-main">{r.title} <span class="muted">{r.year ?? ''}</span></span>
         <span class="li-side">{r.gb.toFixed(1)} GB &rarr; save {r.save_gb.toFixed(1)}
-          &middot; {r.rating != null ? 'rated ' + r.rating : r.watched ? 'watched' : 'unwatched'}</span>
+          &middot; {r.rating != null ? 'rated ' + r.rating : r.watched ? 'watched' : 'unwatched'}
+          <ActionBtn label="encode next" verb="encode-next" body={'id=' + r.radarrId} busyLabel="queueing..."
+                     title="Front of tonight's local re-encode queue. No download, no new H&R; all safety gates still apply." /></span>
       </div>
     {/each}
 
     <div class="muted" style:margin-top="8px">
       showing 10 of {d.reclaim_candidates} candidates &middot; savings estimated at x265 &asymp; {Math.round(d.hevc_factor * 100)}% of x264 size
-      &middot; proposal-only: a re-grab verb needs its own security review before buttons appear here
+      &middot; "encode next" queues the nightly compactor (01:00-07:00, max 6/night) &mdash; never a re-download
     </div>
   {/snippet}
 </Card>

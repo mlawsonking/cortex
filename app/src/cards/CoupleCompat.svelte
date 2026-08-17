@@ -1,13 +1,14 @@
 <script>
   // I5 Couple Compatibility - the overlap between his learned taste and her rule-defined lanes, over films the
-  // server ALREADY OWNS and nobody has watched. Read-only by construction: the "refresh Date Night playlist"
-  // verb does not exist server-side, and a new verb needs its own security review + Michael's approval before
-  // any button may appear here.
+  // server ALREADY OWNS and nobody has watched. Verb 'date-night-refresh' (M3-approved 2026-08-14): rebuilds
+  // the Plex "Date Night" collection from this shelf - tag edits on owned items only, replace semantics,
+  // verify-by-requery server-side. Nothing downloads, nothing deletes.
   //
   // THE ASYMMETRY IS SHOWN, NOT HIDDEN: his side comes from play history, her side from brain\her-lanes.json,
   // because the household shares one Plex account and she has no separate signal to learn from. The footer says
   // so, so nobody reads this card as "the server figured out what she likes".
   import Card from './Card.svelte';
+  import ActionBtn from './ActionBtn.svelte';
 
   let { contract, now } = $props();
 
@@ -31,8 +32,10 @@
       <div class="stat"><div class="n">{d.pool_total}</div><div class="l">unwatched pool</div></div>
     </div>
 
-    <div class="muted" style:margin-bottom="6px">
-      Date night &mdash; already on the shelf, fits her lanes, ranked by his taste:
+    <div class="muted" style:margin-bottom="6px" style:display="flex" style:align-items="center" style:gap="8px">
+      <span>Date night &mdash; already on the shelf, fits her lanes, ranked by his taste:</span>
+      <ActionBtn label="refresh Date Night in Plex" verb="date-night-refresh" busyLabel="tagging..."
+                 title="Rebuilds the Plex 'Date Night' collection from this shelf. Tag edits only - nothing downloads or deletes." />
     </div>
     {#each d.date_night as p, i (p.ratingKey ?? p.tmdb ?? i)}
       <div class="li">
@@ -71,7 +74,7 @@
       her lanes are hand-written rules in brain\her-lanes.json, not a learned persona &mdash; she shares the
       household Plex account, so there is no separate history to learn from. {d.pool_total - d.matched_any}
       unwatched films match no lane and are deliberately off these shelves.
-      Read-only: a "build the playlist" verb needs its own security review before buttons appear here.
+      "Refresh" rebuilds the Plex "Date Night" collection to match this shelf exactly (replace semantics).
     </div>
   {/snippet}
 </Card>

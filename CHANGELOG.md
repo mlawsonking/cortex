@@ -2,6 +2,33 @@
 
 Semver on the app; each contract is versioned independently in `contracts\registry.json`.
 
+## [passport 1.1.0] 2026-08-16 - Curated filmography id repair + the 1987 floor moves where it was claimed to be
+
+**Fixed - the Auteur passport card was scoring other films' ownership.** The curated `$FILMOGRAPHY` table in
+`wg\audit\passport.ps1` had 109 of 264 TMDB ids resolving to a completely different film than their label
+(600 'Duel' was Full Metal Jacket; 4147 'Revolutionary Road' was Road to Perdition; 273248 'American Sniper'
+was Tarantino's The Hateful Eight) - invisible in the output because Resolve-Title prints the curated label
+whenever an id is not in Radarr. Every id was re-resolved from the director's real TMDB directing credits
+(the method gap_radar.py proved; Coen Brothers via Joel Coen + an Ethan Coen pass for Drive-Away Dolls),
+keeping the curated title lists verbatim. All 264 titles resolved, 0 unmatched; 4 spot-check anchors
+(Body of Lies 12113, Welcome to Marwen 351044, Meet the Feebles 8216, J. Edgar 88794) all hit.
+
+**Fixed - the 1987 year floor now actually lives in the producer.** Passport.svelte and passport.schema.json
+both claimed it did; passport.ps1 applied none. It now drops pre-1987 canon films from every total, tally and
+missing[] list (35 films excluded, same rule as Gap Radar), driven by a new `$YEARBYID` table generated from
+TMDB release dates in the same pass. A film with no year entry is dropped and counted in `films_undated`,
+never guessed. Payload gains `year_floor` / `films_below_floor` / `films_undated` / `generated_note`
+(additive -> contract 1.1.0). The curated table keeps its full pre-floor canon: it documents the human
+judgement and gap_radar.py reuses it read-only (a FORMAT CONTRACT comment now marks the parse anchors).
+
+**Verified by effect**
+* `powershell -NoProfile -File passport.ps1` (PS 5.1, pure ASCII checked): 229 post-floor films = 264 - 35,
+  0 undated, per-director tallies now match the real library (e.g. Spielberg 25/25 own, Coens 18/18).
+* gap_radar.py rerun against the repaired source: **`curated_ids_wrong` 109 -> 0**, 16/16 directors,
+  228 post-floor films (229 minus its known Joel-only Drive-Away Dolls unmatch), missing lists agree with
+  passport's (Body of Lies, Welcome to Marwen, ...).
+* wrap_files.py rewrapped only `passport`; validate-contracts.py: 30 contracts, 0 hard failures, exit 0.
+
 ## [P3] 2026-07-30 - Intelligence + actions, behind a kill-flag - awaiting GATE M2
 
 **Added** - 7 cards: `Oracle` (score + brief + HEVC reclaim, proposal-only), `HnR` (structurally read-only),

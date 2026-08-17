@@ -15,6 +15,7 @@
         "year": { "type": ["integer", "string", "null"] },
         "why": { "type": "string", "description": "The seed film that produced this pick ('because you loved X'). Empty = no seed known; the UI must not invent a reason." },
         "genres": { "type": "string" },
+        "mode": { "type": "string", "description": "v1.2.0: 'discover' (recs pool) or 'date-night' (Friday - pick drawn from the couple-compat date-night shelf: owned, unwatched, fits her lanes)." },
         "tmdb": { "type": ["integer", "null"], "description": "null when the recs-pool record could not be matched back to this pick by title - then no art is published either, rather than art for the wrong film." },
         "art_url": { "type": "string" },
         "art_external": { "type": "boolean" },

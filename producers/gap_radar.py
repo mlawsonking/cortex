@@ -19,6 +19,9 @@
 #   Gap Radar therefore matches on the curated TITLE - the actual human judgement in that file - and re-resolves
 #   every id from the director's real TMDB directing credits. The bad ids are counted and reported in
 #   generated_note, never repaired: passport.ps1 is read-only to this producer, and the fix belongs at the source.
+#   [2026-08-16: the source WAS repaired - passport.ps1's ids were re-resolved from directing credits by this
+#   same method and curated_ids_wrong now reads 0. The title matching here stays as designed: it is the defense
+#   that caught the corruption, and it keeps this producer immune to any future bad id at the source.]
 #
 # HARD RULE - THE 1987 YEAR FLOOR (memory\cinematic-taste-profile.md): a film released before 1987 is NEVER a gap.
 # Pre-1987 films are dropped from totals AND from missing[] on both halves, so "8/10" means "8 of the 10 films

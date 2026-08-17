@@ -217,7 +217,7 @@
       "consumers": ["I10 Cost of Quality card"]
     },
     "tonight-pick": {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "producer": "gen-dashboard.py gather_tonight (personal-recs.json + audit\\tonight-pick.json idx) -> emit_ops.py",
       "cadence": "120s (re-resolved every regen; reroll verb bumps idx)",
       "slo_seconds": 900,
@@ -297,8 +297,8 @@
       "consumers": ["4K upgrade advisor card"]
     },
     "passport": {
-      "version": "1.0.0",
-      "producer": "passport.ps1 (manual - NO scheduled task exists)",
+      "version": "1.1.0",
+      "producer": "passport.ps1 (manual - NO scheduled task exists; ids repaired + 1987 floor enforced 2026-08-16)",
       "cadence": "manual",
       "slo_seconds": null,
       "source": "wg\\dashboard\\passport.json",
