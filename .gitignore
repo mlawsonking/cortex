@@ -12,3 +12,4 @@ __pycache__/
 
 # Client error beacon (P6) - rotated runtime log, not source
 errors.jsonl
+.beacon-sigs.txt

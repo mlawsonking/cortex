@@ -1,0 +1,24 @@
+# allow-verbs.baseline - the committed expectation for dashboard-server.py ALLOW_VERBS (the /act verb
+# allow-list). verify-brain.ps1 regexes the literal out of the server source and diffs it against this file;
+# ANY difference is a hard FAIL, because a new reachable verb is new attack surface.
+#
+# CHANGING THIS FILE IS THE APPROVAL STEP. It is only legitimate to edit it in the SAME commit as the
+# dashboard-server.py change that adds or removes the verb. If verify-brain fails on this check and no such
+# commit exists, the server source was modified out-of-band - treat it as tampering, not as a stale baseline.
+#
+# One verb per line, sorted. Blank lines and #-comments are ignored by the checker.
+# captured 2026-08-18 from dashboard-server.py (14 verbs)
+butler
+date-night-refresh
+encode-next
+force-snapraid-sync
+grab
+qbit-pause
+qbit-resume
+refresh-recs
+regen-now
+reroll
+restart-service
+search-missing
+tell-michael
+upgrade4k
