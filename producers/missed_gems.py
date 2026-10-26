@@ -33,6 +33,7 @@ import taste_core as tc
 LANDED_DAYS = 60
 LANDED_N = 10
 GEMS_N = 15
+SHOWS_N = 5                 # contract 1.1.0: shows get their own section (films dominate the match ranking)
 STAGE2_FILMS = 450
 MIN_ROWS = 10
 HERO_TAG = "hero-drop"
@@ -205,6 +206,10 @@ def main():
     landed = [r for r in rows if r["days_on_shelf"] is not None and r["days_on_shelf"] <= LANDED_DAYS][:LANDED_N]
     taken = {r["key"] for r in landed}
     gems = [r for r in rows if r["key"] not in taken][:GEMS_N]
+    taken |= {r["key"] for r in gems}
+    # 1.1.0: the first run scored 79 never-started series and NONE reached the film-dominated top lists, so a page
+    # promised as "shows and movies" read films-only without saying so. Shows now get their own top-5 section.
+    shows_top = [r for r in rows if r["type"] == "tv" and r["key"] not in taken][:SHOWS_N]
 
     note = ("Your own library, never played. Films: the unwatched-pool contract (%s); shows: %s. Match = similarity "
             "to the films you rated 8+ and the series you binge (TMDB keywords + shared directors/cast, scaled by "
@@ -218,10 +223,11 @@ def main():
         note += " Caveats: " + "; ".join(taste.notes) + "."
     data = {"landed_days": LANDED_DAYS, "tv_source": tv_source,
             "counts": {"movies_pool": len(pool), "shows_pool": n_shows, "scored": len(rows), "excluded": ex},
-            "landed": landed, "gems": gems, "note": note}
+            "landed": landed, "gems": gems, "shows": shows_top, "note": note}
     path = bc.write_contract("missed-gems", data)
-    log("missed-gems written: %s (%d landed in %dd, %d gems)" % (path, len(landed), LANDED_DAYS, len(gems)))
-    for label, lst in (("LANDED", landed), ("GEMS", gems)):
+    log("missed-gems written: %s (%d landed in %dd, %d gems, %d shows of %d considered)"
+        % (path, len(landed), LANDED_DAYS, len(gems), len(shows_top), n_shows))
+    for label, lst in (("LANDED", landed), ("GEMS", gems), ("SHOWS", shows_top)):
         for r in lst:
             log("  %-6s [%s] %s (%s) match %.2f  %sd on shelf  because %s"
                 % (label, "film" if r["type"] == "movie" else "show", r["title"], r["year"], r["match"],

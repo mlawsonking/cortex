@@ -317,8 +317,8 @@
       "consumers": ["#/streaming page", "add-movie / add-series verbs (server-side allow-list)"]
     },
     "missed-gems": {
-      "version": "1.0.0",
-      "producer": "brain\\producers\\missed_gems.py (task Missed Gems, weekly Sat 06:50; taste_core, deterministic)",
+      "version": "1.1.0",
+      "producer": "brain\\producers\\missed_gems.py (task Missed Gems, weekly Sat 06:50; taste_core, deterministic; +shows section 1.1.0)",
       "cadence": "weekly",
       "slo_seconds": 777600,
       "source": null,

@@ -2,6 +2,18 @@
 
 Semver on the app; each contract is versioned independently in `contracts\registry.json`.
 
+## [missed-gems 1.1.0 + server-side kill flag] 2026-10-26 - follow-ups
+
+**Added - Missed Gems "Shows you haven't started"** (contract 1.1.0, additive `shows` list, top 5 by match). The first
+run scored 79 never-started series and none reached the film-dominated landed/gems lists, so a page promised as
+"shows and movies" silently read films-only. The page also states "N unwatched films and M unwatched series
+considered". "1 days on the shelf" -> "1 day".
+
+**Fixed - ACTIONS-OFF is now enforced by the server for EVERY /act verb.** It used to only hide /v2/ buttons; the
+server (and the legacy pages, which call /act directly) kept executing every allow-listed verb. One check in
+dashboard-server.py's /act dispatch returns 403 while the flag exists. Proven both ways (regen-now 403 / 200).
+Release 0d8552c8267f; validate-contracts 32/32; verify-brain 5/5 exit 0.
+
 ## [streaming-best 1.0.0 + missed-gems 1.0.0 + add verbs + hash routing] 2026-10-26 - Two taste-personalized pages
 
 Commissioned by Michael 2026-10-26; spec + his three locked decisions in `wg\GAMEPLAN-STREAMING-PAGES-2026-10.md`.

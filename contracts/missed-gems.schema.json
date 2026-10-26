@@ -1,62 +1,417 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "missed-gems",
-  "description": "Page 2 'Missed Gems' (inward): michael's OWN library - owned, unwatched, taste-matched - scored by taste_core.py. Weekly, fully deterministic (no model call). landed = added in the last landed_days, taste-ranked; gems = the all-time top unwatched by match, any age, with days_on_shelf ('this is you, why you no watch yet?'). Films come from the unwatched-pool contract (Plex Movies, viewCount 0, not rated, >= 1987). Shows come straight from the Plex TV section (series with zero watched episodes) because unwatched-pool is a top-level movie ARRAY whose consumers (couple-compat, dead-shelf) would mis-read show rows - tv_source states this. Read-only contract: no verb hangs off it.",
+  "description": "Page 2 'Missed Gems' (inward): michael's OWN library - owned, unwatched, taste-matched - scored by taste_core.py. Weekly, fully deterministic (no model call). landed = added in the last landed_days, taste-ranked; gems = the all-time top unwatched by match, any age, with days_on_shelf ('this is you, why you no watch yet?'). Films come from the unwatched-pool contract (Plex Movies, viewCount 0, not rated, >= 1987). Shows come straight from the Plex TV section (series with zero watched episodes) because unwatched-pool is a top-level movie ARRAY whose consumers (couple-compat, dead-shelf) would mis-read show rows - tv_source states this. Read-only contract: no verb hangs off it. v1.1.0 (2026-10-26, additive): shows = the top unwatched series by match, own section, because films dominate the landed/gems ranking (79 series scored, 0 reached those lists in the first run).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["landed_days", "tv_source", "counts", "landed", "gems", "note"],
+  "required": [
+    "landed_days",
+    "tv_source",
+    "counts",
+    "landed",
+    "gems",
+    "shows",
+    "note"
+  ],
   "properties": {
-    "landed_days": { "type": "integer", "minimum": 1 },
-    "tv_source": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "landed_days": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tv_source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
     "counts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["movies_pool", "shows_pool", "scored", "excluded"],
+      "required": [
+        "movies_pool",
+        "shows_pool",
+        "scored",
+        "excluded"
+      ],
       "properties": {
-        "movies_pool": { "type": "integer", "minimum": 0 },
-        "shows_pool": { "type": "integer", "minimum": 0 },
-        "scored": { "type": "integer", "minimum": 0 },
-        "excluded": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } }
+        "movies_pool": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shows_pool": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scored": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excluded": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
       }
     },
-    "landed": { "type": "array", "maxItems": 12, "items": { "$comment": "same row shape as gems", "type": "object", "additionalProperties": false,
-      "required": ["key", "type", "tmdb_id", "title", "year", "genres", "match", "because", "people", "added_at", "days_on_shelf", "rating", "rating_key", "thumb", "episodes"],
-      "properties": {
-        "key": { "type": "string", "pattern": "^[mt]:[0-9]+$" },
-        "type": { "type": "string", "enum": ["movie", "tv"] },
-        "tmdb_id": { "type": ["integer", "null"] },
-        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
-        "year": { "type": ["integer", "null"] },
-        "genres": { "type": "array", "maxItems": 6, "items": { "type": "string" } },
-        "match": { "type": "number", "minimum": 0, "maximum": 1 },
-        "because": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
-        "people": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
-        "added_at": { "type": ["string", "null"] },
-        "days_on_shelf": { "type": ["integer", "null"], "minimum": 0 },
-        "rating": { "type": ["number", "null"] },
-        "rating_key": { "type": "string", "pattern": "^[0-9]+$" },
-        "thumb": { "description": "Plex library path for the same-origin /photo proxy.", "type": ["string", "null"], "pattern": "^/library/metadata/[0-9]+/thumb$" },
-        "episodes": { "type": ["integer", "null"] }
-      } } },
-    "gems": { "type": "array", "maxItems": 20, "items": { "type": "object", "additionalProperties": false,
-      "required": ["key", "type", "tmdb_id", "title", "year", "genres", "match", "because", "people", "added_at", "days_on_shelf", "rating", "rating_key", "thumb", "episodes"],
-      "properties": {
-        "key": { "type": "string", "pattern": "^[mt]:[0-9]+$" },
-        "type": { "type": "string", "enum": ["movie", "tv"] },
-        "tmdb_id": { "type": ["integer", "null"] },
-        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
-        "year": { "type": ["integer", "null"] },
-        "genres": { "type": "array", "maxItems": 6, "items": { "type": "string" } },
-        "match": { "type": "number", "minimum": 0, "maximum": 1 },
-        "because": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
-        "people": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
-        "added_at": { "type": ["string", "null"] },
-        "days_on_shelf": { "type": ["integer", "null"], "minimum": 0 },
-        "rating": { "type": ["number", "null"] },
-        "rating_key": { "type": "string", "pattern": "^[0-9]+$" },
-        "thumb": { "type": ["string", "null"], "pattern": "^/library/metadata/[0-9]+/thumb$" },
-        "episodes": { "type": ["integer", "null"] }
-      } } },
-    "note": { "type": "string", "minLength": 1, "maxLength": 1600 }
+    "landed": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "$comment": "same row shape as gems",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "type",
+          "tmdb_id",
+          "title",
+          "year",
+          "genres",
+          "match",
+          "because",
+          "people",
+          "added_at",
+          "days_on_shelf",
+          "rating",
+          "rating_key",
+          "thumb",
+          "episodes"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[mt]:[0-9]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "tv"
+            ]
+          },
+          "tmdb_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "genres": {
+            "type": "array",
+            "maxItems": 6,
+            "items": {
+              "type": "string"
+            }
+          },
+          "match": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "because": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          },
+          "people": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          },
+          "added_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "days_on_shelf": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "rating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rating_key": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "thumb": {
+            "description": "Plex library path for the same-origin /photo proxy.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^/library/metadata/[0-9]+/thumb$"
+          },
+          "episodes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "gems": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "type",
+          "tmdb_id",
+          "title",
+          "year",
+          "genres",
+          "match",
+          "because",
+          "people",
+          "added_at",
+          "days_on_shelf",
+          "rating",
+          "rating_key",
+          "thumb",
+          "episodes"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[mt]:[0-9]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "tv"
+            ]
+          },
+          "tmdb_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "genres": {
+            "type": "array",
+            "maxItems": 6,
+            "items": {
+              "type": "string"
+            }
+          },
+          "match": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "because": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          },
+          "people": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          },
+          "added_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "days_on_shelf": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "rating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rating_key": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "thumb": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^/library/metadata/[0-9]+/thumb$"
+          },
+          "episodes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "shows": {
+      "description": "Top never-started series by match (type always tv), excluding any already in landed/gems.",
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "type",
+          "tmdb_id",
+          "title",
+          "year",
+          "genres",
+          "match",
+          "because",
+          "people",
+          "added_at",
+          "days_on_shelf",
+          "rating",
+          "rating_key",
+          "thumb",
+          "episodes"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[mt]:[0-9]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "tv"
+            ]
+          },
+          "tmdb_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "genres": {
+            "type": "array",
+            "maxItems": 6,
+            "items": {
+              "type": "string"
+            }
+          },
+          "match": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "because": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          },
+          "people": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          },
+          "added_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "days_on_shelf": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "rating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rating_key": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "thumb": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^/library/metadata/[0-9]+/thumb$"
+          },
+          "episodes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    }
   }
 }

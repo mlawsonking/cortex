@@ -13,6 +13,7 @@
   function shelf(days) {
     if (days === null || days === undefined) return 'added ?';
     if (days < 1) return 'landed today';
+    if (days === 1) return '1 day on the shelf';
     if (days < 60) return days + ' days on the shelf';
     if (days < 730) return Math.round(days / 30) + ' months on the shelf';
     return (days / 365).toFixed(1) + ' years on the shelf';
@@ -51,7 +52,8 @@
   {#snippet body(d)}
     <div class="lede">Already on your shelf, never played, and very much your kind of thing.</div>
     <div class="muted" style:margin-bottom="14px">
-      {d.counts.scored} unwatched titles scored ({d.counts.shows_pool} shows) &middot; {d.tv_source}
+      {d.counts.scored - d.counts.shows_pool} unwatched films and {d.counts.shows_pool} unwatched series considered
+      &middot; {d.tv_source}
     </div>
 
     <h3 class="sec">Landed recently <span class="muted">added in the last {d.landed_days} days</span></h3>
@@ -59,6 +61,9 @@
 
     <h3 class="sec">This is you. Why you no watch yet? <span class="muted">the all-time best unwatched fits</span></h3>
     {@render rows(d.gems, true)}
+
+    <h3 class="sec">Shows you haven't started <span class="muted">top {(d.shows ?? []).length} of {d.counts.shows_pool} unwatched series by match</span></h3>
+    {#if d.shows}{@render rows(d.shows, true)}{:else}<div class="muted">this contract predates the shows section (v1.0.0) - it appears after the next weekly run</div>{/if}
 
     <div class="muted" style:margin-top="12px">{d.note}</div>
   {/snippet}
