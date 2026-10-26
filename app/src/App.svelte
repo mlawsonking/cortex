@@ -29,6 +29,21 @@
   import AnomalyFeed from './cards/AnomalyFeed.svelte';
   import Wrapped from './cards/Wrapped.svelte';
   import CostQuality from './cards/CostQuality.svelte';
+  import StreamingBest from './pages/StreamingBest.svelte';
+  import MissedGems from './pages/MissedGems.svelte';
+
+  // Hash routing (2026-10-26): #/ = the cards, #/streaming = Streaming Best, #/missed = Missed Gems. Pure client
+  // side - no server route, no CSP change; the pages fetch their own contracts through the same /v2/data/ route.
+  function parseRoute(h) {
+    const r = String(h || '').replace(/^#\/?/, '').split(/[?/]/)[0];
+    return r === 'streaming' || r === 'missed' ? r : 'cards';
+  }
+  let route = $state(parseRoute(location.hash));
+  $effect(() => {
+    const on = () => { route = parseRoute(location.hash); window.scrollTo(0, 0); };
+    window.addEventListener('hashchange', on);
+    return () => window.removeEventListener('hashchange', on);
+  });
 
   // One clock for every age badge; one Contract per card. Nothing here reaches outside the origin.
   // Card order IS priority order, because on a phone this is a single column.
@@ -65,6 +80,7 @@
 
   $effect(() => tick.start());
   $effect(() => {
+    if (route !== 'cards') return;          // the card contracts only poll while the cards are on screen
     const stops = all.map((c) => c.start());
     return () => stops.forEach((s) => s());
   });
@@ -73,12 +89,21 @@
 <div class="top">
   <div>
     <div class="brand">Cortex &middot; Media Brain</div>
-    <div class="brand-sub">
-      DESKTOP-VSRO8KT &middot; contract-backed &middot; <a href="/">legacy dashboard &rarr;</a>
-    </div>
+    <div class="brand-sub">DESKTOP-VSRO8KT &middot; contract-backed</div>
   </div>
+  <nav class="nav">
+    <a href="#/" class:on={route === 'cards'}>Cortex</a>
+    <a href="#/streaming" class:on={route === 'streaming'}>Streaming Best</a>
+    <a href="#/missed" class:on={route === 'missed'}>Missed Gems</a>
+    <a href="/legacy/" class="legacy">legacy &rarr;</a>
+  </nav>
 </div>
 
+{#if route === 'streaming'}
+<div class="grid"><StreamingBest /></div>
+{:else if route === 'missed'}
+<div class="grid"><MissedGems /></div>
+{:else}
 <div class="grid">
   {#if !actionsEnabled}
     <div class="readonly">
@@ -117,6 +142,9 @@
   <RecentlyAdded contract={plexNow} now={tick.now} />
 </div>
 
+{/if}
+
 <div class="foot">
-  P4 complete &middot; 25 contracts rendered &middot; every card shows the age of its own data
+  {route === 'cards' ? '25 contracts on the cards' : route === 'streaming' ? 'streaming-best contract' : 'missed-gems contract'}
+  &middot; every view shows the age of its own data
 </div>

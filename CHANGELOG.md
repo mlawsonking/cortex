@@ -2,6 +2,56 @@
 
 Semver on the app; each contract is versioned independently in `contracts\registry.json`.
 
+## [streaming-best 1.0.0 + missed-gems 1.0.0 + add verbs + hash routing] 2026-10-26 - Two taste-personalized pages
+
+Commissioned by Michael 2026-10-26; spec + his three locked decisions in `wg\GAMEPLAN-STREAMING-PAGES-2026-10.md`.
+
+**Added - `producers\taste_core.py`** (import-only): one "is this michael?" scorer shared by both pages. Inputs that
+already existed: 488 banked ratings (mean 8.52 - he rates high, so seeds are WEIGHTED by (rating-7)/3), the
+taste-graph michael persona, taste-velocity heat (page 1 only, mild), directors/cast from his rated films' TMDB
+credits, the 17 passport auteurs (read-only via gap_radar's parser) as a strong prior, and 8 binged series as TV
+seeds. Match = keyword/people similarity to loved seeds (scaled by genre overlap) + genre weights + person affinity
++ Bayesian-weighted quality, x a language factor from his own ratings. Hard rules in code: 1987 film floor, no
+Family/Kids/Children, animation only because HIS ratings open it, no docu/talk/reality. TMDB cached under
+`data\cache\tmdb\` (first build ~1,250 lookups at 4/s; reruns ~all cached). Calibration lesson (first cut): with genre
+overlap as an ADDITIVE similarity term, 403 loved seeds meant every pure Drama "matched" The Help at 1.0 - genre now
+only scales keyword/people similarity, and fan-inflated 8.9-over-900-votes no longer outranks 8.1-over-9,000.
+
+**Added - contract `streaming-best` v1.0.0** (`streaming_best.py`, SLO 35d, daily 07:20 task + monthly self-gate,
+Wrapped pattern; also retries the AI pass daily if a run fell back). TMDB discover + trending inside ~18 months;
+floors films >= 200 votes / 6.8, shows >= 100 / 7.2; films need a digital release; shows need a resolved tvdb id and,
+if they premiered before the window, <= 5 seasons ("returning prestige", not season 11 of Chicago Med). Excludes
+owned (any Radarr/Sonarr entry), rated, Plex-watched, Missed-Gems rows. Deterministic top 40 -> ONE claude -p
+(subscription; --json-schema, --allowedTools "", neutral cwd, transient retry) picks 15-20 mixed + one "why" line;
+any failure ships the deterministic order with `ai:false` + reason. Grounding fix: the digest now carries each seed's
+rating and each person's source films after the first AI run credited a director with the wrong film.
+First list (ai=true): 8 films / 10 shows from 337 candidates -> 136 survivors.
+
+**Added - contract `missed-gems` v1.0.0** (`missed_gems.py`, SLO 9d, weekly Sat 06:50, deterministic). Films from
+unwatched-pool (two-stage: cheap Plex-field prescore, TMDB-enrich the top 450 + all recent); shows read straight from
+the Plex TV section (zero watched episodes). DEVIATION from the spec's "extend unwatched-pool to v1.2.0": that
+contract is a top-level movie ARRAY and couple-compat's Date Night refresh would mis-read show rows, so TV is read
+here instead and `tv_source` says so. hero-drop titles (curated for Nathaniel) excluded. First run: 674 scored, 10
+landed (Moneyball, Erin Brockovich, Sleepers...), 15 gems (Oppenheimer, Casino, Magnolia, The Irishman, Heat...).
+
+**Added - verbs `add-movie` / `add-series`** (first disk-spending verbs; baseline updated in this same change, 14 ->
+16). All guards server-side in `wg\dashboard\library_add.py` (guarded import like beacon_store): ACTIONS-OFF honored
+server-side, id must be a row of the CURRENT streaming-best contract with matching type (tvdb taken from the
+contract), 5 adds/min, G: >= 90% refused, D: seed store < 1 TiB refused (extra guard = release-batch's hold),
+duplicate refused, profile "x265 Compact 1080p" + roots `G:\Media\Movies` / `G:\Media\TV` resolved live by name/path,
+tag `streaming-best`, verify-by-effect re-query. Log `wg\audit\library-add.log`.
+
+**Added - app hash routing** (`#/` cards, `#/streaming`, `#/missed`) + header nav (Cortex / Streaming Best / Missed
+Gems / legacy). Card contracts poll only on the cards route. Posters same-origin (producer /art/sb-*.jpg cache;
+/photo proxy for Plex) - CSP unchanged. Legacy link fixed to `/legacy/` (it pointed at `/`, which is Cortex since P5).
+
+**Verified by effect:** validate-contracts 32/32 exit 0; live /act proofs - bad nonce 401, unknown id refused,
+ACTIONS-OFF refused (page meta flipped to 0), REAL add of Predator: Killer of Killers -> Radarr id 4371 monitored,
+profile 7, tag streaming-best, MoviesSearch fired, grabbed 1080p WEBRip x265 5 s later; duplicate re-click refused;
+Sonarr path dry-run with POST intercepted (correct body; verify-by-effect refused to claim success). Release
+4c7fdfc76c91 leak-grep PASS; verify-brain 5/5 PASS exit 0; both pages render desktop + 375px, zero console errors;
+tasks run rc 0 (Streaming Best self-gated skip, Missed Gems regenerated).
+
 ## [passport 1.1.0] 2026-08-16 - Curated filmography id repair + the 1987 floor moves where it was claimed to be
 
 **Fixed - the Auteur passport card was scoring other films' ownership.** The curated `$FILMOGRAPHY` table in

@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "streaming-best",
+  "description": "Page 1 'Streaming Best' (outward): what is new or peaking across streaming inside an ~18-month window, quality-floored on TMDB's own numbers, ranked by fit to michael's taste (taste_core.py). Monthly, self-gated. items are 15-20 mixed films + shows. ai=true means one claude -p call on the Claude Code SUBSCRIPTION chose and annotated the final list from a deterministic shortlist; ai=false means that pass failed or was skipped and the deterministic taste order shipped instead - ai_note says which, and the page must show it. THIS CONTRACT IS AN ALLOW-LIST: the add-movie / add-series verbs in dashboard-server.py only accept a tmdb_id that is present in the CURRENT items[] with the matching type (encode-next pattern), and the Sonarr add uses the tvdb_id recorded HERE - the client can never add anything this producer did not propose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["month", "window_start", "window_end", "ai", "ai_note", "floors", "pool", "items", "note"],
+  "properties": {
+    "month": { "type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$" },
+    "window_start": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "window_end": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "ai": { "type": "boolean" },
+    "ai_note": { "type": "string", "maxLength": 400 },
+    "floors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["movie_votes", "movie_avg", "tv_votes", "tv_avg"],
+      "properties": {
+        "movie_votes": { "type": "integer", "minimum": 1 },
+        "movie_avg": { "type": "number", "minimum": 0, "maximum": 10 },
+        "tv_votes": { "type": "integer", "minimum": 1 },
+        "tv_avg": { "type": "number", "minimum": 0, "maximum": 10 }
+      }
+    },
+    "pool": {
+      "description": "Honest funnel: unique TMDB candidates seen, survivors of floors + exclusions, shortlist size, and the count dropped per reason.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidates", "survivors", "shortlist", "excluded"],
+      "properties": {
+        "candidates": { "type": "integer", "minimum": 0 },
+        "survivors": { "type": "integer", "minimum": 0 },
+        "shortlist": { "type": "integer", "minimum": 0 },
+        "excluded": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "rank", "type", "tmdb_id", "tvdb_id", "title", "year", "genres", "vote_avg", "votes",
+                     "match", "because", "people", "why", "poster_path", "poster_local", "overview", "airing"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^[mt]:[0-9]+$" },
+          "rank": { "type": "integer", "minimum": 1, "maximum": 20 },
+          "type": { "type": "string", "enum": ["movie", "tv"] },
+          "tmdb_id": { "type": "integer", "minimum": 1 },
+          "tvdb_id": { "description": "Resolved via TMDB external_ids at produce time; null for films. A show without one is never listed.", "type": ["integer", "null"] },
+          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "year": { "type": ["integer", "null"] },
+          "genres": { "type": "array", "maxItems": 6, "items": { "type": "string" } },
+          "vote_avg": { "type": "number", "minimum": 0, "maximum": 10 },
+          "votes": { "type": "integer", "minimum": 0 },
+          "match": { "type": "number", "minimum": 0, "maximum": 1 },
+          "because": { "description": "The loved titles (rated 8+, or binged series) this pick is most similar to.", "type": "array", "maxItems": 3, "items": { "type": "string" } },
+          "people": { "description": "Directors/creators/cast he has affinity for (auteur list or loved films).", "type": "array", "maxItems": 3, "items": { "type": "string" } },
+          "why": { "type": "string", "minLength": 10, "maxLength": 200 },
+          "poster_path": { "type": ["string", "null"] },
+          "poster_local": { "description": "Same-origin cached poster (/art/sb-*.jpg) - the page never fetches TMDB, CSP stays img-src 'self'.", "type": ["string", "null"], "pattern": "^/art/sb-(movie|tv)-[0-9]+\\.jpg$" },
+          "overview": { "type": "string", "maxLength": 200 },
+          "airing": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "properties": {
+              "status": { "type": "string" },
+              "next_air_date": { "type": ["string", "null"] },
+              "last_air_date": { "type": ["string", "null"] },
+              "seasons": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "note": { "type": "string", "minLength": 1, "maxLength": 1600 }
+  }
+}

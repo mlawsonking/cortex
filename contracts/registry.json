@@ -305,6 +305,26 @@
       "client": true,
       "schema": "passport.schema.json",
       "consumers": ["Auteur passport card", "I6 Gap Radar"]
+    },
+    "streaming-best": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\streaming_best.py (task Streaming Best, daily 07:20 + monthly self-gate; taste_core + one claude -p curation pass, subscription)",
+      "cadence": "monthly",
+      "slo_seconds": 3024000,
+      "source": null,
+      "client": true,
+      "schema": "streaming-best.schema.json",
+      "consumers": ["#/streaming page", "add-movie / add-series verbs (server-side allow-list)"]
+    },
+    "missed-gems": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\missed_gems.py (task Missed Gems, weekly Sat 06:50; taste_core, deterministic)",
+      "cadence": "weekly",
+      "slo_seconds": 777600,
+      "source": null,
+      "client": true,
+      "schema": "missed-gems.schema.json",
+      "consumers": ["#/missed page"]
     }
   }
 }

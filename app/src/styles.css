@@ -89,6 +89,15 @@ body {
 .brand-sub a { color: var(--info); text-decoration: none; }
 .brand-sub a:hover { text-decoration: underline; }
 
+/* header nav (hash routes: #/ cards, #/streaming, #/missed) */
+.nav { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.nav a { color: var(--text-dim); text-decoration: none; font-size: 13px; padding: 6px 11px; border-radius: 999px;
+         border: 1px solid transparent; }
+.nav a:hover { color: var(--text-strong); border-color: var(--line); }
+.nav a.on { color: var(--text-strong); border-color: rgba(88, 166, 255, 0.45); background: rgba(88, 166, 255, 0.1); }
+.nav a.legacy { color: var(--info); font-size: 12px; }
+@media (max-width: 640px) { .nav a { padding: 9px 11px; } }
+
 /* ---------- card ---------- */
 .card {
   background: linear-gradient(180deg, var(--bg-card), var(--bg-card-2));
