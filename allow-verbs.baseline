@@ -10,6 +10,8 @@
 # captured 2026-08-18 from dashboard-server.py (14 verbs)
 # 2026-10-26: +add-movie +add-series (Streaming Best page, wg\GAMEPLAN-STREAMING-PAGES-2026-10.md; guards in
 #   wg\dashboard\library_add.py) - updated in the same change as the dashboard-server.py edit (16 verbs)
+# 2026-11-02: +rate-title +taste-feedback +queue-watch (taste loop round 1, wg\GAMEPLAN-TASTE-LOOP-2026-11.md;
+#   guards in wg\dashboard\taste_verbs.py) - updated in the same change as the dashboard-server.py edit (19 verbs)
 add-movie
 add-series
 butler
@@ -19,10 +21,13 @@ force-snapraid-sync
 grab
 qbit-pause
 qbit-resume
+queue-watch
+rate-title
 refresh-recs
 regen-now
 reroll
 restart-service
 search-missing
+taste-feedback
 tell-michael
 upgrade4k

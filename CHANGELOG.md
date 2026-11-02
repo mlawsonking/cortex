@@ -2,6 +2,26 @@
 
 Semver on the app; each contract is versioned independently in `contracts\registry.json`.
 
+## [taste-ledger 1.0.0 + rate-queue 1.0.0 + tonight-pick 1.3.0 + 3 verbs + #/rate] 2026-11-02 - Taste loop round 1
+Spec `wg\GAMEPLAN-TASTE-LOOP-2026-11.md`; full write-up SERVER-AUDIT s83.
+- New producers: `taste_ledger.py` (append-only ledger + Plex rating ingest + compile to ratings-effective.json /
+  taste-signals.json), `taste_eval.py` (fixed-holdout accuracy + guess calibration), `rate_queue.py` (leverage-ranked
+  rate queue with household filter: content rules + device x hour naive Bayes), `plex_rows.py` (4 Plex home-screen
+  collections via the Plex API), `taste_daily.py` (daily chain runner).
+- `taste_core.py` (additive): `ratings_source()` prefers ratings-effective (>= 400 rows, TASTE-LEDGER-OFF absent);
+  TV ratings -> TV seeds (kids lanes ignored); thumbs-up seeds at 0.35; thumbs-down / bailed = 0.5-weight dislikes;
+  blocked titles in `excluded()`; `build(rows=...)` for the eval's training split. Scoring math, floors, lanes unchanged.
+  Pages now say which ratings source they used.
+- Contracts: taste-ledger 1.0.0 + rate-queue 1.0.0 (new, client), tonight-pick 1.3.0 (additive: rating_key, match;
+  discover mode = missed-gems). validate-contracts 34/34.
+- Verbs rate-title / taste-feedback / queue-watch (`wg\dashboard\taste_verbs.py`), allow-verbs.baseline 19. Route
+  `/taste-search` (read-only, tailnet).
+- App: RateQuick card, RateQueue page (#/rate), RateRow, ThumbBtns, WatchBtn, lib/taste.svelte.js; thumbs on both
+  pages, Tonight buttons, nav badge. Release 99ee24fb00bc.
+- Tests: new `brain\tests\` (33 unittest cases, temp-dir isolated) + `smoke_taste_loop.py` = verify-brain check 7.
+- Found while building: Windows lock-file "delete pending" raises PermissionError, not FileExistsError (V1.1 caught
+  221 lost appends of 1000); Kometa rejects collection_order custom with an id list.
+
 ## [missed-gems 1.1.0 + server-side kill flag] 2026-10-26 - follow-ups
 
 **Added - Missed Gems "Shows you haven't started"** (contract 1.1.0, additive `shows` list, top 5 by match). The first

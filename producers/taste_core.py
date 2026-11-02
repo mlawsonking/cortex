@@ -32,6 +32,32 @@ import brain_contracts as bc
 
 WG = r"C:\Users\bobdo\wg"
 RATINGS = os.path.join(WG, "audit", "trakt-ratings.json")
+# Taste loop (wg\GAMEPLAN-TASTE-LOOP-2026-11.md): taste_ledger.py compiles the frozen base + the append-only ledger
+# into ratings-effective.json (same list shape) + taste-signals.json. Read those when sane, else fall back to the
+# base - a broken loop can never take the pages down. TASTE_OUT_DIR / TASTE_OFF_PATH are the tests' overrides.
+EFFECTIVE_MIN_ROWS = 400
+THUMB_UP_W = 0.35           # a thumbs-up is a seed at about the weight of an 8 (8 -> .33)
+SOFT_DISLIKE_W = 0.5        # thumbs-down and "bailed" count as half a dislike
+
+
+def taste_paths():
+    out = os.environ.get("TASTE_OUT_DIR") or os.path.join(WG, "audit")
+    off = os.environ.get("TASTE_OFF_PATH") or os.path.join(WG, "brain", "TASTE-LEDGER-OFF")
+    return os.path.join(out, "ratings-effective.json"), os.path.join(out, "taste-signals.json"), off
+
+
+def ratings_source():
+    """(rows, source_name, signals_dict). ratings-effective when present, parseable and >= EFFECTIVE_MIN_ROWS rows
+    and the loop is not switched off; otherwise the frozen Trakt base with empty signals."""
+    eff_p, sig_p, off = taste_paths()
+    if not os.path.exists(off):
+        rows = bc.read_json(eff_p)
+        if isinstance(rows, list) and len(rows) >= EFFECTIVE_MIN_ROWS:
+            sig = bc.read_json(sig_p)
+            return rows, "ratings-effective", sig if isinstance(sig, dict) else {}
+    return bc.read_json(RATINGS), "trakt-ratings", {}
+
+
 PASSPORT_PS1 = os.path.join(WG, "audit", "passport.ps1")
 CACHE = os.path.join(bc.DATA, "cache", "tmdb")
 RADARR = "http://127.0.0.1:7878/api/v3"
@@ -225,13 +251,26 @@ class Taste:
         self.nonfiction_ok = set()
         self.lang_share = {}
         self.notes = []
+        self.source = "trakt-ratings"
+        self.signals = {}
+        self.rated_tv_ids = set()
+        self.blocked = {}           # "movie:<tmdb>" / "tv:<tmdb>" -> reason (thumbs-down, household)
 
     # ---------------------------------------------------------------------------------------------------- build
-    def build(self, tmdb_key):
+    def build(self, tmdb_key, rows=None):
         self.tmdb = TMDB(tmdb_key)
-        rated = bc.read_json(RATINGS)
+        if rows is None:
+            rated, self.source, self.signals = ratings_source()
+        else:
+            rated, self.source = rows, "injected"       # taste_eval builds on a training split
+        self.log("taste source: %s" % self.source)
         if not isinstance(rated, list) or len(rated) < 50:
-            raise RuntimeError("ratings seed %s missing or implausibly small" % RATINGS)
+            raise RuntimeError("ratings seed (%s) missing or implausibly small" % self.source)
+        for k in self.signals.get("hidden") or []:
+            self.blocked[k] = "hidden by your thumbs-down"
+        for d in self.signals.get("household") or []:
+            self.blocked.setdefault(d.get("key"), "marked not-me (household)")
+        tv_rows = [r for r in rated if r.get("type") == "show" and (r.get("show") or {}).get("ids", {}).get("tmdb")]
         for r in rated:
             m = r.get("movie") or {}
             tid = (m.get("ids") or {}).get("tmdb")
@@ -317,6 +356,8 @@ class Taste:
             self.notes.append("auteur list unreadable from passport.ps1 (%s) - no auteur prior" % type(ex).__name__)
 
         self._tv_seeds()
+        self._ledger_tv(tv_rows)
+        self._soft_signals()
         self.log("taste profile: %d ratings (mean %.2f), %d loved seeds (%d TV), %d dislikes, %d genres weighted, "
                  "%d people, %d auteurs; animation lane %s; TMDB %d live / %d cached"
                  % (len(self.ratings), self.mean, len(self.seeds), sum(1 for s in self.seeds if s["kind"] == "tv"),
@@ -363,9 +404,85 @@ class Taste:
                 self.person_src[p].append("created " + (f.get("title") or title))
             n += 1
 
+    def _ledger_tv(self, tv_rows):
+        """Series he RATED (taste loop): >= LOVE join the TV seeds at their real rating, <= DISLIKE become dislikes."""
+        for r in tv_rows:
+            s = r["show"]
+            tid = int(s["ids"]["tmdb"])
+            self.rated_tv_ids.add(tid)
+            rating = float(r.get("rating") or 0)
+            if DISLIKE < rating < LOVE:
+                continue
+            try:
+                f = self.tmdb.details("tv", tid, STATIC_TTL_D)
+            except Exception:
+                continue
+            sets = feature_sets(f)
+            title = f.get("title") or s.get("title") or ""
+            # The household rates too (2026-11-02: the one show rating in Plex was Gabby's Dollhouse 10/10). A
+            # kids-lane title never becomes a seed or a dislike, whoever pressed the stars.
+            if sets["genres"] & KIDS or ("Animation" in sets["genres"] and not self.animation_ok):
+                self.log("ignored a kids-lane TV rating: %s" % title)
+                continue
+            if rating >= LOVE:
+                w = (rating - 7.0) / 3.0
+                self.seeds = [x for x in self.seeds if not (x["kind"] == "tv" and x["title"] == title)]
+                self.seeds.append({"title": title, "rating": rating, "weight": w, "sets": sets, "kind": "tv"})
+                self.seed_rating[title] = rating
+                for p in sets["directors"]:
+                    self.person_w[p] += 0.8 * w
+                    self.person_src[p].append("created " + title)
+            else:
+                self.dislikes.append({"title": title, "rating": rating, "sets": sets, "w": 1.0})
+                for p in sets["directors"]:
+                    self.person_w[p] -= 0.4
+
+    def _soft_signals(self):
+        """Thumbs-up = a light seed; thumbs-down / bailed = half a dislike. Never ratings (the ledger keeps them apart)."""
+        def feats(d):
+            try:
+                return self.tmdb.details(d["type"] if d.get("type") in ("movie", "tv") else "movie", int(d["tmdb"]), STATIC_TTL_D)
+            except Exception:
+                return None
+        n_up = n_soft = 0
+        for d in self.signals.get("thumbs_up") or []:
+            f = feats(d)
+            if not f:
+                continue
+            sets = feature_sets(f)
+            title = f.get("title") or d.get("title") or ""
+            self.seeds.append({"title": title, "rating": "thumb", "weight": THUMB_UP_W, "sets": sets,
+                               "kind": f.get("kind") or "movie"})
+            self.seed_rating.setdefault(title, "thumbs-up")
+            for p in sets["directors"]:
+                self.person_w[p] += 1.0 * THUMB_UP_W
+                self.person_src[p].append("directed " + title)
+            for p in sets["cast"]:
+                self.person_w[p] += 0.4 * THUMB_UP_W
+            n_up += 1
+        for d in (self.signals.get("thumbs_down") or []) + (self.signals.get("bailed") or []):
+            f = feats(d)
+            if not f:
+                continue
+            sets = feature_sets(f)
+            self.dislikes.append({"title": f.get("title") or d.get("title") or "", "rating": "soft", "sets": sets,
+                                  "w": SOFT_DISLIKE_W})
+            for p in sets["directors"]:
+                self.person_w[p] -= 0.6 * SOFT_DISLIKE_W
+            for p in sets["cast"]:
+                self.person_w[p] -= 0.2 * SOFT_DISLIKE_W
+            n_soft += 1
+        if n_up or n_soft:
+            self.log("taste loop signals: %d thumbs-up seeds, %d soft dislikes, %d blocked titles"
+                     % (n_up, n_soft, len(self.blocked)))
+
     # ---------------------------------------------------------------------------------------------- hard rules
     def excluded(self, f, enforce_floor=True):
         """Reason string if a candidate breaks a hard taste rule, else None."""
+        if f.get("id") is not None and self.blocked:
+            why = self.blocked.get("%s:%s" % ("tv" if f.get("kind") == "tv" else "movie", f.get("id")))
+            if why:
+                return why
         g = set(norm_genres(f.get("genres")))
         if g & KIDS:
             return "kids/family lane"
@@ -400,7 +517,8 @@ class Taste:
         dis = 0.0
         for d in self.dislikes:
             ds = d["sets"]
-            dis = max(dis, 0.70 * jaccard(cs["keywords"], ds["keywords"]) * (0.4 + 0.6 * jaccard(cs["genres"], ds["genres"])))
+            dis = max(dis, d.get("w", 1.0) * 0.70 * jaccard(cs["keywords"], ds["keywords"]) *
+                      (0.4 + 0.6 * jaccard(cs["genres"], ds["genres"])))
         sim_n = max(0.0, min(1.0, (sim_raw - 0.5 * dis) / SIM_SCALE))
 
         gws = sorted((self.genre_w.get(g, 0.0) for g in cs["genres"]), reverse=True)[:3]

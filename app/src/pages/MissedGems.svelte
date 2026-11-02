@@ -1,14 +1,19 @@
 <script>
   // Page 2 "Missed Gems" (#/missed) - michael's OWN library, owned and never played, ranked by taste. Weekly,
-  // deterministic (no model). Read-only: no verb hangs off this page; posters come through the existing
-  // same-origin /photo proxy (Plex token never reaches the browser).
+  // deterministic (no model). Posters come through the existing same-origin /photo proxy (Plex token never reaches
+  // the browser). Taste loop (2026-11): thumbs on every row (a thumbs-down collapses it with an undo) and
+  // "Tonight" (queue-watch: into the Plex playlist "Cortex: Tonight").
   import { Contract, clock } from '../lib/contracts.svelte.js';
   import Card from '../cards/Card.svelte';
+  import ThumbBtns from '../cards/ThumbBtns.svelte';
+  import WatchBtn from '../cards/WatchBtn.svelte';
+  import { ledger, thumb, thumbOf } from '../lib/taste.svelte.js';
 
   const tick = clock();
   const mg = new Contract('missed-gems', 300000);
   $effect(() => tick.start());
   $effect(() => mg.start());
+  $effect(() => ledger.start());
 
   function shelf(days) {
     if (days === null || days === undefined) return 'added ?';
@@ -23,6 +28,11 @@
 {#snippet rows(list, shame)}
   <div class="mg-grid">
     {#each list as r (r.key)}
+      {@const tk = r.tmdb_id ? r.type + ':' + r.tmdb_id : null}
+      {#if tk && thumbOf(tk) === 'down'}
+      <article class="mg-item gone"><span class="muted">{r.title} hidden - not for you.</span>
+        <button class="linkbtn" onclick={() => thumb(tk, 'clear').catch(() => {})}>undo</button></article>
+      {:else}
       <article class="mg-item">
         {#if r.thumb}
           <img class="mg-poster" loading="lazy" alt="" src={'/photo?key=' + encodeURIComponent(r.thumb) + '&width=150'} />
@@ -40,8 +50,10 @@
           {#if r.because.length}<div class="because">because you loved {r.because.join(', ')}</div>{/if}
           {#if r.people.length}<div class="muted mg-meta">with {r.people.join(', ')}</div>{/if}
           <div class="shelf-age" class:shame={shame && r.days_on_shelf > 180}>{shelf(r.days_on_shelf)}</div>
+          <div class="mg-act"><WatchBtn ratingKey={r.rating_key} title={r.title} />{#if tk}<ThumbBtns tkey={tk} title={r.title} />{/if}</div>
         </div>
       </article>
+      {/if}
     {:else}
       <div class="muted">nothing here this week</div>
     {/each}
@@ -89,5 +101,8 @@
   .because { font-size: 12px; }
   .shelf-age { font-size: 11px; color: var(--text-faint); }
   .shelf-age.shame { color: var(--warn); }
+  .mg-act { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+  .mg-item.gone { padding: 10px 12px; align-items: center; gap: 8px; }
+  .linkbtn { background: none; border: 0; color: var(--info); cursor: pointer; padding: 0 2px; font: inherit; }
   @media (max-width: 640px) { .mg-grid { grid-template-columns: 1fr; } }
 </style>

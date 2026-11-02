@@ -217,11 +217,11 @@
       "consumers": ["I10 Cost of Quality card"]
     },
     "tonight-pick": {
-      "version": "1.2.0",
-      "producer": "gen-dashboard.py gather_tonight (personal-recs.json + audit\\tonight-pick.json idx) -> emit_ops.py",
+      "version": "1.3.0",
+      "producer": "gen-dashboard.py gather_tonight (missed-gems films, owned + unwatched; personal-recs.json fallback; Friday couple-compat; audit\\tonight-pick.json idx) -> emit_ops.py",
       "cadence": "120s (re-resolved every regen; reroll verb bumps idx)",
       "slo_seconds": 900,
-      "source": "wg\\audit\\personal-recs.json",
+      "source": "wg\\brain\\data\\missed-gems.json",
       "client": true,
       "schema": "tonight-pick.schema.json",
       "consumers": ["Tonight's Pick hero", "I1 Rhythm-aware scheduling"]
@@ -325,6 +325,26 @@
       "client": true,
       "schema": "missed-gems.schema.json",
       "consumers": ["#/missed page"]
+    },
+    "taste-ledger": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\taste_ledger.py (task Taste Ledger, every 2 h + after every taste verb; folds audit\\trakt-ratings.json base + audit\\taste-ledger.jsonl)",
+      "cadence": "2h + on taste verbs",
+      "slo_seconds": 172800,
+      "source": null,
+      "client": true,
+      "schema": "taste-ledger.schema.json",
+      "consumers": ["#/rate page", "Streaming Best + Missed Gems thumb state", "Rate card"]
+    },
+    "rate-queue": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\rate_queue.py (task Rate Queue, daily 05:40; quick rebuild after every rating verb)",
+      "cadence": "daily + on rating verbs",
+      "slo_seconds": 172800,
+      "source": null,
+      "client": true,
+      "schema": "rate-queue.schema.json",
+      "consumers": ["Rate card", "#/rate page", "rate-title verb (server-side allow-list)", "weekly digest"]
     }
   }
 }

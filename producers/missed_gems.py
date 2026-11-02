@@ -219,6 +219,8 @@ def main():
             % ("%.1f days old" % pool_age_d if pool_age_d is not None else "age unknown", tv_source.split(" (")[0]))
     if pool_age_d is not None and pool_age_d > 8:
         note += " WARNING: the film pool is past its 8-day SLO - recently watched films may still appear."
+    note += " Ratings: %s (%d)." % ("your ratings + the taste loop" if taste.source == "ratings-effective"
+                                   else "the frozen Trakt snapshot", len(taste.ratings))
     if taste.notes:
         note += " Caveats: " + "; ".join(taste.notes) + "."
     data = {"landed_days": LANDED_DAYS, "tv_source": tv_source,

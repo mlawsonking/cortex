@@ -295,6 +295,10 @@ def _emit_tonight(d):
                 "art_url": art,
                 "art_external": art.startswith("http"),
                 "art_local": _cache_art(tmdb, art)}
+        # v1.3.0 (taste loop): the Plex ratingKey (the "Tonight" button queues it) + the taste_core match.
+        rk = tn.get("rating_key")
+        pick["rating_key"] = str(rk) if rk is not None and str(rk).isdigit() else None
+        pick["match"] = tn.get("match") if isinstance(tn.get("match"), (int, float)) else None
     bc.write_contract("tonight-pick", {"pick": pick, "idx": idx, "pool": pool})
 
 

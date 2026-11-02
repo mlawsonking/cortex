@@ -1,0 +1,417 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "rate-queue",
+  "description": "Rate what you watched (wg\\GAMEPLAN-TASTE-LOOP-2026-11.md s4). Titles played on michael's Plex account, unrated, ranked by leverage = 0.40 influence (how many current Streaming Best / Missed Gems / unwatched-pool candidates the rating moves) + 0.25 uncertainty + 0.20 freshness + 0.15 coverage, times a play-context factor. The household watches on his account, so kids titles (content) and plays whose device x hour look like the household (learned) are hidden - listed under household for one-tap rescue. items is ALSO the rate-title verb's allow-list (a live Plex library lookup is the other). Full rebuild nightly; --quick after each rating removes answered titles so a reload never shows them again.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "backlog",
+    "session_cap",
+    "items",
+    "household",
+    "context",
+    "eval",
+    "refreshed_at",
+    "note"
+  ],
+  "properties": {
+    "backlog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total",
+        "high_leverage",
+        "beyond_high",
+        "household_hidden",
+        "bailed",
+        "rated_7d",
+        "rated_30d",
+        "streak_days",
+        "median_moves"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "high_leverage": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "beyond_high": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "household_hidden": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bailed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rated_7d": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rated_30d": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "streak_days": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "median_moves": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "session_cap": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "type",
+          "rating_key",
+          "tmdb_id",
+          "title",
+          "year",
+          "thumb",
+          "watched_at",
+          "days_since",
+          "completion",
+          "episodes",
+          "genres",
+          "guess",
+          "match",
+          "context_p",
+          "leverage",
+          "reasons",
+          "terms"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[mt]:[0-9]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "tv"
+            ]
+          },
+          "rating_key": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "tmdb_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "thumb": {
+            "type": "string",
+            "pattern": "^/library/metadata/[0-9]+/thumb$"
+          },
+          "watched_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "days_since": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "completion": {
+            "description": "Set only for an abandoned play (percent reached).",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "episodes": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 60
+          },
+          "genres": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            }
+          },
+          "guess": {
+            "description": "Cortex's predicted 1-10 rating. The UI hides it until michael has rated (no anchoring).",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 10
+          },
+          "match": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "context_p": {
+            "description": "P(grown-up viewing slot) of the title's most grown-up play (device x hour); null = no play in Plex history.",
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "leverage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "reasons": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          "terms": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "household": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "type",
+          "rating_key",
+          "tmdb_id",
+          "title",
+          "year",
+          "thumb",
+          "watched_at",
+          "days_since",
+          "completion",
+          "episodes",
+          "genres",
+          "guess",
+          "match",
+          "context_p",
+          "leverage",
+          "reasons",
+          "terms"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[mt]:[0-9]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "tv"
+            ]
+          },
+          "rating_key": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "tmdb_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "thumb": {
+            "type": "string",
+            "pattern": "^/library/metadata/[0-9]+/thumb$"
+          },
+          "watched_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "days_since": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "completion": {
+            "description": "Set only for an abandoned play (percent reached).",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "episodes": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 60
+          },
+          "genres": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            }
+          },
+          "guess": {
+            "description": "Cortex's predicted 1-10 rating. The UI hides it until michael has rated (no anchoring).",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 10
+          },
+          "match": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "context_p": {
+            "description": "P(grown-up viewing slot) of the title's most grown-up play (device x hour); null = no play in Plex history.",
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "leverage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "reasons": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          "terms": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plays_labelled",
+        "prior_grownup"
+      ],
+      "properties": {
+        "plays_labelled": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prior_grownup": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "eval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rho",
+        "baseline_rho",
+        "live_mae",
+        "calibrated"
+      ],
+      "properties": {
+        "rho": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "baseline_rho": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "live_mae": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "calibrated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "refreshed_at": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1200
+    }
+  }
+}

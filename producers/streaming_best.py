@@ -430,6 +430,8 @@ def main():
             "or in Plex watch history; kids/family lanes; docu/talk/reality. Match = similarity to the films you rated 8+ "
             "(and the series you binge) + genre weights + director/cast affinity + quality, with recent-viewing heat as "
             "a mild boost; languages you rarely rate are discounted up to 25%%; quality is Bayesian-weighted so a small fan vote cannot outrank a big one." % (start, today, FLOOR["movie"][0], FLOOR["movie"][1], FLOOR["tv"][0], FLOOR["tv"][1], MAX_RETURNING_SEASONS))
+    note += " Ratings: %s (%d)." % ("your ratings + the taste loop" if taste.source == "ratings-effective"
+                                   else "the frozen Trakt snapshot", len(taste.ratings))
     if taste.notes:
         note += " Caveats: " + "; ".join(taste.notes) + "."
     data = {

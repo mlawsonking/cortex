@@ -5,6 +5,10 @@
   // page makes no external requests and the strict CSP holds.
   import { freshness, humanAge } from '../lib/contracts.svelte.js';
   import ActionBtn from './ActionBtn.svelte';
+  import WatchBtn from './WatchBtn.svelte';
+  import ThumbBtns from './ThumbBtns.svelte';
+  import { ledger } from '../lib/taste.svelte.js';
+  $effect(() => ledger.start());
 
   let { contract, now } = $props();
 
@@ -51,6 +55,7 @@
         {#if p.mode === 'date-night'}owned &amp; unwatched, fits her lanes, ranked by your taste
           {#if p.genres}<span class="muted"> · {p.genres}</span>{/if}
         {:else}
+          {#if p.mode === 'missed-gems'}<span class="shelf">on your shelf, never played</span> &middot; {/if}
           {#if p.why}because you loved <strong>{p.why}</strong>{:else}tuned to your taste{/if}
           {#if p.genres}<span class="muted"> · {p.genres}</span>{/if}
         {/if}
@@ -58,6 +63,8 @@
       <div class="hero-actions">
         <ActionBtn label="reroll" verb="reroll" busyLabel="rerolling..." done={() => contract.refresh()}
                    title="Re-pins a local index and regenerates. Triggers no download." />
+        {#if p.rating_key}<WatchBtn ratingKey={p.rating_key} title={p.title} />{/if}
+        {#if p.tmdb && p.mode !== 'date-night'}<ThumbBtns tkey={'movie:' + p.tmdb} title={p.title} />{/if}
         <span class="muted">pick {contract.data.idx % Math.max(1, contract.data.pool) + 1} of {contract.data.pool}</span>
       </div>
     {/if}
@@ -65,6 +72,7 @@
 </section>
 
 <style>
+  .shelf { color: var(--ok); }
   .dn-chip {
     display: inline-block;
     font-size: 10px;

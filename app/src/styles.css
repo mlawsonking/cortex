@@ -94,6 +94,8 @@ body {
 .nav a { color: var(--text-dim); text-decoration: none; font-size: 13px; padding: 6px 11px; border-radius: 999px;
          border: 1px solid transparent; }
 .nav a:hover { color: var(--text-strong); border-color: var(--line); }
+.nav-badge { display: inline-block; min-width: 16px; margin-left: 5px; padding: 0 5px; border-radius: 999px; font-size: 10px;
+             font-weight: 700; line-height: 16px; text-align: center; color: #0a0e14; background: var(--warn); }
 .nav a.on { color: var(--text-strong); border-color: rgba(88, 166, 255, 0.45); background: rgba(88, 166, 255, 0.1); }
 .nav a.legacy { color: var(--info); font-size: 12px; }
 @media (max-width: 640px) { .nav a { padding: 9px 11px; } }

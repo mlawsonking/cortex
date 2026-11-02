@@ -7,11 +7,14 @@
   import Card from '../cards/Card.svelte';
   import AddBtn from '../cards/AddBtn.svelte';
   import { actionsEnabled } from '../lib/act.js';
+  import ThumbBtns from '../cards/ThumbBtns.svelte';
+  import { ledger, thumb, thumbOf } from '../lib/taste.svelte.js';
 
   const tick = clock();
   const sb = new Contract('streaming-best', 300000);
   $effect(() => tick.start());
   $effect(() => sb.start());
+  $effect(() => ledger.start());          // thumbs state (taste loop): a thumbs-down row collapses with an undo
 
   let filter = $state('all');
 
@@ -48,6 +51,10 @@
 
     <div class="sb-grid">
       {#each d.items.filter((x) => filter === 'all' || x.type === filter) as r (r.key)}
+        {#if thumbOf(r.type + ':' + r.tmdb_id) === 'down'}
+        <article class="sb-item gone"><span class="muted">{r.title} hidden - not for you.</span>
+          <button class="linkbtn" onclick={() => thumb(r.type + ':' + r.tmdb_id, 'clear').catch(() => {})}>undo</button></article>
+        {:else}
         <article class="sb-item">
           {#if r.poster_local}
             <img class="sb-poster" loading="lazy" alt="" src={r.poster_local} />
@@ -71,9 +78,10 @@
             {#if r.because.length}<div class="because muted">because you loved {r.because.join(', ')}</div>{/if}
             {#if r.people.length}<div class="because muted">with {r.people.join(', ')}</div>{/if}
             <details class="ov"><summary class="muted">synopsis</summary><p>{r.overview || 'no synopsis on TMDB'}</p></details>
-            <div class="sb-act"><AddBtn type={r.type} tmdb={r.tmdb_id} /></div>
+            <div class="sb-act"><AddBtn type={r.type} tmdb={r.tmdb_id} /> <ThumbBtns tkey={r.type + ':' + r.tmdb_id} title={r.title} /></div>
           </div>
         </article>
+        {/if}
       {/each}
     </div>
     <div class="muted" style:margin-top="12px">{d.note}</div>
@@ -87,6 +95,8 @@
   .ai.fallback { color: var(--warn); }
   .tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
   .tabs .on { border-color: var(--info); color: var(--text-strong); }
+  .sb-item.gone { padding: 10px 12px; align-items: center; gap: 8px; }
+  .linkbtn { background: none; border: 0; color: var(--info); cursor: pointer; padding: 0 2px; font: inherit; }
   .sb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
   .sb-item { display: flex; gap: 12px; padding: 10px; border: 1px solid var(--line-soft); border-radius: var(--r);
              background: rgba(255, 255, 255, 0.015); min-width: 0; }

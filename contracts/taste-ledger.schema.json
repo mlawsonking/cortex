@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "taste-ledger",
+  "description": "The taste loop's state (wg\\GAMEPLAN-TASTE-LOOP-2026-11.md). taste_ledger.py folds the frozen Trakt base (wg\\audit\\trakt-ratings.json, never modified) with the append-only signal log wg\\audit\\taste-ledger.jsonl into ratings-effective.json + taste-signals.json, and publishes counts, the current thumbs map (the pages render thumb state and hide thumbs-down rows from it), the last 15 events, seed drift and the taste_eval accuracy history. degraded=true means the loop is off or the ledger unreadable and taste_core is on the base alone.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["degraded", "reason", "bad_lines", "counts", "thumbs", "recent", "drift", "eval"],
+  "properties": {
+    "degraded": {"type": "boolean"},
+    "reason": {"type": "string", "maxLength": 300},
+    "bad_lines": {"type": "integer", "minimum": 0},
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base", "effective", "effective_movie", "effective_tv", "by_src", "events", "thumbs_up", "thumbs_down", "bailed", "notme", "skip"],
+      "properties": {
+        "base": {"type": "integer", "minimum": 0},
+        "effective": {"type": "integer", "minimum": 0},
+        "effective_movie": {"type": "integer", "minimum": 0},
+        "effective_tv": {"type": "integer", "minimum": 0},
+        "by_src": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "events": {"type": "integer", "minimum": 0},
+        "thumbs_up": {"type": "integer", "minimum": 0},
+        "thumbs_down": {"type": "integer", "minimum": 0},
+        "bailed": {"type": "integer", "minimum": 0},
+        "notme": {"type": "integer", "minimum": 0},
+        "skip": {"type": "integer", "minimum": 0}
+      }
+    },
+    "thumbs": {
+      "description": "\"movie:<tmdb>\" / \"tv:<tmdb>\" -> up | down (current, undo-aware).",
+      "type": "object",
+      "additionalProperties": {"type": "string", "enum": ["up", "down"]}
+    },
+    "recent": {
+      "type": "array",
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "title", "type", "value", "ts", "undone"],
+        "properties": {
+          "kind": {"type": "string", "enum": ["rating", "thumb", "notme", "skip", "bailed"]},
+          "title": {"type": "string", "maxLength": 120},
+          "type": {"type": ["string", "null"]},
+          "value": {"type": ["integer", "string", "null"]},
+          "ts": {"type": ["string", "null"]},
+          "undone": {"type": "boolean"}
+        }
+      }
+    },
+    "drift": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["loved_added", "loved_removed"],
+      "properties": {
+        "loved_added": {"type": "integer", "minimum": 0},
+        "loved_removed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "eval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "latest", "history", "live_mae"],
+      "properties": {
+        "baseline": {"type": ["object", "null"]},
+        "latest": {"type": ["object", "null"]},
+        "history": {"type": "array", "maxItems": 26, "items": {"type": "object"}},
+        "live_mae": {"type": ["number", "null"]}
+      }
+    }
+  }
+}
