@@ -13,3 +13,10 @@ __pycache__/
 # Client error beacon (P6) - rotated runtime log, not source
 errors.jsonl
 .beacon-sigs.txt
+
+# Server-local state and household config - NEVER in the repo (kid profiles, Roku/LAN details, ledgers)
+spin-rules.json
+spin-curation.json
+roku-play.json
+state/
+*.jsonl
