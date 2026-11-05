@@ -38,7 +38,7 @@
 {/if}
 
 <style>
-  .chip { display: inline-block; font-size: 11px; font-weight: 600; padding: 4px 9px; border-radius: 999px;
-          border: 1px solid var(--line); color: var(--text-dim); background: rgba(255, 255, 255, 0.04); }
-  .chip.ok { color: var(--ok); border-color: rgba(63, 185, 80, 0.4); background: rgba(63, 185, 80, 0.1); }
+  .chip { display: inline-block; font-size: var(--fs-xs); font-weight: 600; padding: 4px 9px; border-radius: 999px;
+          border: 1px solid var(--line); color: var(--text-dim); background: var(--chip-bg); }
+  .chip.ok { color: var(--ok); border-color: var(--ok-line); background: var(--ok-tint); }
 </style>

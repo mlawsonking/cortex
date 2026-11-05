@@ -81,6 +81,15 @@
                health, security, calendar, activity, upgrades, passport, recs, rhythm, ledger, horizon,
                coupleCompat, gapRadar, tasteVelocity, anomalyFeed, wrapped, costQuality];
 
+  // Phone: the nav is one swipeable row, so keep the active pill in view (horizontal scroll of the strip only - the
+  // page itself is not moved). A no-op wherever the row fits.
+  $effect(() => {
+    route;
+    const strip = document.querySelector('.nav-wrap');
+    const on = strip?.querySelector('a.on');
+    if (strip && on && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = on.offsetLeft - 12;
+  });
+
   $effect(() => tick.start());
   $effect(() => rateQueue.start());         // taste loop: the nav badge + home card + #/rate share one poll
   $effect(() => {
@@ -91,18 +100,23 @@
 </script>
 
 <div class="top">
-  <div>
-    <div class="brand">Cortex &middot; Media Brain</div>
-    <div class="brand-sub">DESKTOP-VSRO8KT &middot; contract-backed</div>
+  <div class="brand-row">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div>
+      <div class="brand">Cortex</div>
+      <div class="brand-sub">Media Brain &middot; contract-backed</div>
+    </div>
   </div>
-  <nav class="nav">
-    <a href="#/" class:on={route === 'cards'}>Cortex</a>
-    <a href="#/streaming" class:on={route === 'streaming'}>Streaming Best</a>
-    <a href="#/missed" class:on={route === 'missed'}>Missed Gems</a>
-    <a href="#/rate" class:on={route === 'rate'}>Rate{#if rateQueue.data?.backlog?.high_leverage}<span class="nav-badge"
-       title="high-leverage titles waiting for your rating">{rateQueue.data.backlog.high_leverage}</span>{/if}</a>
-    <a href="/legacy/" class="legacy">legacy &rarr;</a>
-  </nav>
+  <div class="nav-wrap">
+    <nav class="nav">
+      <a href="#/" class:on={route === 'cards'} aria-current={route === 'cards' ? 'page' : undefined}>Cortex</a>
+      <a href="#/streaming" class:on={route === 'streaming'} aria-current={route === 'streaming' ? 'page' : undefined}>Streaming Best</a>
+      <a href="#/missed" class:on={route === 'missed'} aria-current={route === 'missed' ? 'page' : undefined}>Missed Gems</a>
+      <a href="#/rate" class:on={route === 'rate'} aria-current={route === 'rate' ? 'page' : undefined}>Rate{#if rateQueue.data?.backlog?.high_leverage}<span class="nav-badge"
+         title="high-leverage titles waiting for your rating">{rateQueue.data.backlog.high_leverage}</span>{/if}</a>
+      <a href="/legacy/" class="legacy">legacy &rarr;</a>
+    </nav>
+  </div>
 </div>
 
 {#if route === 'streaming'}

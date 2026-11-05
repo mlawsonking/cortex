@@ -83,23 +83,23 @@
 
 <style>
   .lede { margin-bottom: 2px; }
-  .sec { font-size: 15px; color: var(--text-strong); margin: 14px 0 10px; font-weight: 600; }
+  .sec { font-size: var(--fs-md); color: var(--text-strong); margin: 14px 0 10px; font-weight: 600; }
   .sec .muted { font-weight: 400; margin-left: 6px; }
   .mg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
   .mg-item { display: flex; gap: 12px; padding: 9px; border: 1px solid var(--line-soft); border-radius: var(--r);
-             background: rgba(255, 255, 255, 0.015); min-width: 0; }
+             background: var(--surface-2); min-width: 0; }
   .mg-poster { width: 64px; height: 96px; flex: 0 0 auto; object-fit: cover; border-radius: var(--r-sm);
                background: var(--bg-sunken); border: 1px solid var(--line); }
   .mg-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .mg-title { font-weight: 600; color: var(--text-strong); }
-  .mg-meta { font-size: 11px; }
-  .kind { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; padding: 1px 6px; border-radius: 999px;
+  .mg-meta { font-size: var(--fs-xs); }
+  .kind { font-size: var(--fs-xs); font-weight: 500; padding: 1px 6px; border-radius: 999px;
           border: 1px solid var(--line); color: var(--text-dim); margin-left: 4px; vertical-align: 2px; }
-  .kind.tv { color: var(--accent); border-color: rgba(188, 140, 255, 0.35); }
-  .match { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
+  .kind.tv { color: var(--accent); border-color: var(--accent-line); }
+  .match { display: flex; align-items: center; gap: 8px; font-size: var(--fs-xs); color: var(--text-dim); }
   .match .bar { flex: 1; max-width: 140px; }
-  .because { font-size: 12px; }
-  .shelf-age { font-size: 11px; color: var(--text-faint); }
+  .because { font-size: var(--fs-xs); }
+  .shelf-age { font-size: var(--fs-xs); color: var(--text-faint); }
   .shelf-age.shame { color: var(--warn); }
   .mg-act { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
   .mg-item.gone { padding: 10px 12px; align-items: center; gap: 8px; }

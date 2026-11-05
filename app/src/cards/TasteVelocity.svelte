@@ -82,10 +82,10 @@
     align-items: center;
     gap: 10px;
     padding: 3px 0;
-    font-size: 13px;
+    font-size: var(--fs-sm);
   }
   .tv-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tv-arrow { font-size: 9px; color: var(--text-faint); }
+  .tv-arrow { font-size: var(--fs-xs); color: var(--text-faint); }
   .tv-arrow.up { color: var(--ok); }
   .tv-arrow.down { color: var(--warn); }
 
@@ -100,14 +100,14 @@
   }
   .tv-mid { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--line); }
   .tv-fill { position: absolute; top: 0; bottom: 0; transition: width 0.4s ease; }
-  .tv-fill.up { background: linear-gradient(90deg, rgba(63, 185, 80, 0.45), var(--ok)); border-radius: 0 3px 3px 0; }
-  .tv-fill.down { background: linear-gradient(90deg, var(--warn), rgba(210, 153, 34, 0.45)); border-radius: 3px 0 0 3px; }
+  .tv-fill.up { background: linear-gradient(90deg, var(--ok-soft), var(--ok)); border-radius: 0 3px 3px 0; }
+  .tv-fill.down { background: linear-gradient(90deg, var(--warn), var(--warn-soft)); border-radius: 3px 0 0 3px; }
 
-  .tv-delta { text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; color: var(--text-dim); }
+  .tv-delta { text-align: right; font-variant-numeric: tabular-nums; font-size: var(--fs-xs); color: var(--text-dim); }
   .tv-delta.up { color: var(--ok); }
   .tv-delta.down { color: var(--warn); }
 
-  .tv-shares { text-align: right; font-size: 11px; color: var(--text-faint); }
+  .tv-shares { text-align: right; font-size: var(--fs-xs); color: var(--text-faint); }
   .tv-vs { color: var(--text-faint); font-style: italic; }
 
   .tv-note { margin-top: 10px; line-height: 1.55; }

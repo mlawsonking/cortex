@@ -81,8 +81,8 @@
     min-width: 480px;
   }
   .heat-corner { grid-row: 1; grid-column: 1; }
-  .heat-hour { grid-row: 1; font-size: 9px; color: var(--text-faint); }
-  .heat-day { grid-column: 1; font-size: 10px; color: var(--text-dim); align-self: center; }
+  .heat-hour { grid-row: 1; font-size: var(--fs-xs); color: var(--text-faint); }
+  .heat-day { grid-column: 1; font-size: var(--fs-xs); color: var(--text-dim); align-self: center; }
   .heat-cell { border-radius: 3px; background: var(--bg-sunken); border: 1px solid var(--line-soft); }
   .btn.sel { border-color: var(--info); color: var(--info); }
   /* wide content scrolls inside its own box - the page body must never scroll horizontally */

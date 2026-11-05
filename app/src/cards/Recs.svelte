@@ -29,8 +29,8 @@
 </Card>
 
 <style>
-  .rrow { padding: 5px 0; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+  .rrow { padding: 5px 0; border-top: 1px solid var(--line-soft); }
   .rrow:first-child { border-top: none; }
   .rtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .rfrom { font-size: 0.85em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rfrom { font-size: var(--fs-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>

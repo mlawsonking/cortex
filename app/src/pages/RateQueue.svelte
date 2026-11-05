@@ -234,30 +234,30 @@
 
 <style>
   .rp-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-  .rp-prog { font-size: 16px; color: var(--text-strong); }
+  .rp-prog { font-size: var(--fs-lg); color: var(--text-strong); }
   .streak { color: var(--warn); }
-  .rp-sub { font-size: 12px; margin-top: 2px; }
+  .rp-sub { font-size: var(--fs-xs); margin-top: 2px; }
   .readonly-note { color: var(--warn); margin-bottom: 10px; }
-  .rp-reveal { padding: 10px 12px; border-radius: var(--r); background: rgba(63, 185, 80, 0.1);
-               border: 1px solid rgba(63, 185, 80, 0.35); margin-bottom: 10px; color: var(--text-strong); }
+  .rp-reveal { padding: 10px 12px; border-radius: var(--r); background: var(--ok-tint);
+               border: 1px solid var(--ok-line); margin-bottom: 10px; color: var(--text-strong); }
   .rp-card { display: flex; gap: 16px; padding: 12px; border: 1px solid var(--line); border-radius: var(--r);
-             background: rgba(255, 255, 255, 0.02); }
+             background: var(--surface-2); }
   .rp-poster { width: 150px; height: 225px; max-height: 40vh; flex: 0 0 auto; object-fit: cover; border-radius: var(--r-sm);
                background: var(--bg-sunken); border: 1px solid var(--line); }
   .rp-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-  .rp-title { font-size: 18px; font-weight: 700; color: var(--text-strong); }
-  .rp-meta { font-size: 12px; }
-  .rp-reasons { margin: 0; padding-left: 18px; font-size: 13px; }
+  .rp-title { font-size: var(--fs-lg); font-weight: 700; color: var(--text-strong); }
+  .rp-meta { font-size: var(--fs-xs); }
+  .rp-reasons { margin: 0; padding-left: 18px; font-size: var(--fs-sm); }
   .rp-alt { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .rp-alt .btn { min-height: 40px; }
   .rp-browse { margin-left: auto; display: flex; gap: 4px; }
-  .rp-keys { font-size: 11px; margin-top: 6px; }
+  .rp-keys { font-size: var(--fs-xs); margin-top: 6px; }
   .rp-cap { padding: 22px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
-  .rp-cap-t { font-size: 18px; color: var(--text-strong); margin-bottom: 4px; }
+  .rp-cap-t { font-size: var(--fs-lg); color: var(--text-strong); margin-bottom: 4px; }
   .rp-cap .btn { margin-top: 10px; }
   .rp-done { padding: 16px 0; }
   .rp-hist { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .rp-h { font-size: 12px; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-dim); }
+  .rp-h { font-size: var(--fs-xs); padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-dim); }
   .rp-h.fresh { border-color: var(--info); color: var(--text-strong); }
   .linkbtn { background: none; border: 0; color: var(--info); cursor: pointer; padding: 0 2px; font: inherit; }
   .linkbtn:disabled { opacity: 0.5; }
@@ -267,9 +267,9 @@
   .rp-hit { padding: 8px 0; border-top: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 4px; }
   .rp-hit-t { font-weight: 600; color: var(--text-strong); }
   .rp-hh { margin-top: 16px; }
-  .kind { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; padding: 1px 6px; border-radius: 999px;
+  .kind { font-size: var(--fs-xs); font-weight: 500; padding: 1px 6px; border-radius: 999px;
           border: 1px solid var(--line); color: var(--text-dim); margin-left: 4px; vertical-align: 3px; }
-  .kind.tv { color: var(--accent); border-color: rgba(188, 140, 255, 0.35); }
+  .kind.tv { color: var(--accent); border-color: var(--accent-line); }
   @media (max-width: 640px) {
     .rp-card { flex-direction: column; align-items: center; padding: 10px; }
     .rp-poster { width: 120px; height: 180px; }
