@@ -18,7 +18,7 @@
   {#snippet body(d)}
     <div class="row" style:margin-bottom="10px">
       <span class="dot {scoreClass(d.score)}"></span>
-      <strong class="mono" style:font-size="20px" style:color="var(--text-strong)">
+      <strong class="figure" style:color="var(--text-strong)">
         {d.score === null ? '-' : d.score}<span class="muted">/100</span>
       </strong>
       <span class="muted">{d.why}</span>

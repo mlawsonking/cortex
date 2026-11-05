@@ -63,7 +63,7 @@
 </Card>
 
 <style>
-  .rq-lede { font-size: 12px; margin-bottom: 8px; }
+  .rq-lede { font-size: var(--fs-xs); margin-bottom: 8px; }
   .rq-item { display: flex; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line-soft); transition: opacity 0.3s; }
   .rq-item:first-of-type { border-top: 0; }
   .rq-item.flipped { opacity: 0.85; }
@@ -71,10 +71,10 @@
                background: var(--bg-sunken); border: 1px solid var(--line); }
   .rq-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
   .rq-title { font-weight: 600; color: var(--text-strong); }
-  .rq-why { font-size: 11px; }
-  .rq-flip { font-size: 14px; padding: 10px 0; color: var(--text-strong); }
-  .rq-more { display: inline-block; margin-top: 8px; font-size: 12px; color: var(--info); text-decoration: none; }
+  .rq-why { font-size: var(--fs-xs); }
+  .rq-flip { font-size: var(--fs-md); padding: 10px 0; color: var(--text-strong); }
+  .rq-more { display: inline-block; margin-top: 8px; font-size: var(--fs-xs); color: var(--info); text-decoration: none; }
   .rq-empty { padding: 8px 0; }
-  .kind { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; padding: 1px 6px; border-radius: 999px;
+  .kind { font-size: var(--fs-xs); font-weight: 500; padding: 1px 6px; border-radius: 999px;
           border: 1px solid var(--line); color: var(--accent); margin-left: 4px; vertical-align: 2px; }
 </style>

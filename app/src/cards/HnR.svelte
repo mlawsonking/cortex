@@ -11,7 +11,7 @@
 <Card title="H&amp;R Sentinel" {contract} {now}>
   {#snippet body(d)}
     <div class="row" style:margin-bottom="10px">
-      <strong class="mono" style:font-size="20px" style:color={d.count ? 'var(--warn)' : 'var(--ok)'}>{d.count}</strong>
+      <strong class="figure" style:color={d.count ? 'var(--warn)' : 'var(--ok)'}>{d.count}</strong>
       <span class="muted">seeding below a 1.0 ratio</span>
     </div>
 

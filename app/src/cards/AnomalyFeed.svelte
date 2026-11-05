@@ -72,19 +72,19 @@
 
 <style>
   .allclear { display: flex; align-items: center; gap: 8px; padding: 4px 0 6px; }
-  .ok-dot { width: 9px; height: 9px; border-radius: 50%; background: #3fb950; display: inline-block; }
+  .ok-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); display: inline-block; }
   .probhead { margin-bottom: 6px; }
-  .arow { padding: 5px 0; border-top: 1px solid rgba(255, 255, 255, 0.06); }
-  .ahead { display: flex; align-items: baseline; gap: 8px; font-size: 13px; min-width: 0; }
+  .arow { padding: 5px 0; border-top: 1px solid var(--line-soft); }
+  .ahead { display: flex; align-items: baseline; gap: 8px; font-size: var(--fs-sm); min-width: 0; }
   .asubject { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sev {
-    flex: 0 0 auto; font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    flex: 0 0 auto; font-size: var(--fs-xs); font-weight: 500;
     padding: 1px 5px; border-radius: 6px; border: 1px solid;
   }
-  .sev.warn { color: #f85149; border-color: rgba(248, 81, 73, 0.35); background: rgba(248, 81, 73, 0.13); }
-  .sev.info { color: #d29922; border-color: rgba(210, 153, 34, 0.35); background: rgba(210, 153, 34, 0.13); }
+  .sev.warn { color: var(--bad); border-color: var(--bad-line); background: var(--bad-tint); }
+  .sev.info { color: var(--warn); border-color: var(--warn-line); background: var(--warn-tint); }
   .aev { margin-top: 2px; }
-  .sources { margin-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 6px; }
+  .sources { margin-top: 10px; border-top: 1px solid var(--line-soft); padding-top: 6px; }
   .srow { display: flex; gap: 6px; min-width: 0; }
   .sname { flex: 0 0 auto; }
   .sdetail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

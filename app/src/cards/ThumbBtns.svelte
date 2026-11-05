@@ -32,8 +32,8 @@
 <style>
   .th { display: inline-flex; gap: 4px; align-items: center; }
   .th-b { min-width: 40px; min-height: 36px; border-radius: 999px; border: 1px solid var(--line); cursor: pointer;
-          background: rgba(255, 255, 255, 0.04); font-size: 15px; line-height: 1; padding: 0 8px; filter: grayscale(0.6); }
-  .th-b:hover:not(:disabled), .th-b:focus-visible { border-color: var(--info); filter: none; outline: none; }
-  .th-b.on { border-color: var(--ok); background: rgba(63, 185, 80, 0.14); filter: none; }
+          background: var(--chip-bg); font-size: var(--fs-md); line-height: 1; padding: 0 8px; filter: grayscale(0.6); }
+  .th-b:hover:not(:disabled), .th-b:focus-visible { border-color: var(--info); filter: none; }
+  .th-b.on { border-color: var(--ok); background: var(--ok-tint); filter: none; }
   .th-b:disabled { opacity: 0.6; }
 </style>

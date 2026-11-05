@@ -21,13 +21,13 @@
 <style>
   .rr-row { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; }
   .rr-b { min-height: 44px; min-width: 0; border-radius: var(--r-sm); border: 1px solid var(--line); cursor: pointer;
-          background: var(--bg-sunken); color: var(--text-strong); font-weight: 700; font-size: 15px;
+          background: var(--bg-sunken); color: var(--text-strong); font-weight: 700; font-size: var(--fs-md);
           font-variant-numeric: tabular-nums; padding: 0; }
-  .rr-b:hover:not(:disabled), .rr-b:focus-visible { border-color: var(--info); background: rgba(88, 166, 255, 0.14); outline: none; }
-  .rr-b.hi:hover:not(:disabled), .rr-b.hi:focus-visible { border-color: var(--ok); background: rgba(63, 185, 80, 0.16); }
-  .rr-b.lo:hover:not(:disabled), .rr-b.lo:focus-visible { border-color: var(--bad); background: rgba(248, 81, 73, 0.12); }
+  .rr-b:hover:not(:disabled), .rr-b:focus-visible { border-color: var(--info); background: var(--info-tint); }
+  .rr-b.hi:hover:not(:disabled), .rr-b.hi:focus-visible { border-color: var(--ok); background: var(--ok-tint); }
+  .rr-b.lo:hover:not(:disabled), .rr-b.lo:focus-visible { border-color: var(--bad); background: var(--bad-tint); }
   .rr-b:disabled { opacity: 0.5; cursor: default; }
-  .rr-hint { font-size: 11px; margin-top: 4px; min-height: 15px; }
+  .rr-hint { font-size: var(--fs-xs); margin-top: 4px; min-height: 15px; }
   .rr-row.compact { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   @media (max-width: 480px) { .rr-row { grid-template-columns: repeat(5, minmax(0, 1fr)); } }   /* >= 44 px tap targets on a phone */
 </style>

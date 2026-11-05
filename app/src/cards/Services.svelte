@@ -14,7 +14,7 @@
 <Card title="Services" {contract} {now}>
   {#snippet body(d)}
     <div class="row" style:margin-bottom="10px">
-      <strong class="mono" style:font-size="20px" style:color="var(--text-strong)">{d.up_count}/{d.total}</strong>
+      <strong class="figure" style:color="var(--text-strong)">{d.up_count}/{d.total}</strong>
       <span class="muted">up</span>
     </div>
 

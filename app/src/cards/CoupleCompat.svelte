@@ -82,16 +82,14 @@
 <style>
   .lane {
     display: inline-block;
-    font-size: 9px;
+    font-size: var(--fs-xs);
     font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
     padding: 1px 6px;
     margin-left: 6px;
     border-radius: 999px;
     color: var(--accent);
-    background: rgba(188, 140, 255, 0.12);
-    border: 1px solid rgba(188, 140, 255, 0.32);
+    background: var(--accent-tint);
+    border: 1px solid var(--accent-line);
     vertical-align: 1px;
   }
   /* a 0..1 mean deserves a bar, not a fake percentage */

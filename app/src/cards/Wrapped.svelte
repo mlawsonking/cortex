@@ -44,18 +44,18 @@
     margin-bottom: 12px;
   }
   .chip {
-    font-size: 12px;
+    font-size: var(--fs-xs);
     padding: 2px 9px;
     border-radius: 999px;
     color: var(--accent);
-    border: 1px solid rgba(188, 140, 255, 0.35);
-    background: rgba(188, 140, 255, 0.1);
+    border: 1px solid var(--accent-line);
+    background: var(--accent-tint);
     letter-spacing: 0.4px;
   }
   .para {
     margin: 0 0 12px;
     max-width: 78ch;
-    font-size: 14px;
+    font-size: var(--fs-md);
     line-height: 1.65;
     color: var(--text);
   }

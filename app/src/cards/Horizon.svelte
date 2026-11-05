@@ -37,9 +37,9 @@
 
 <style>
   .allclear { display: flex; align-items: center; gap: 8px; padding: 4px 0 6px; }
-  .ok-dot { width: 9px; height: 9px; border-radius: 50%; background: #3fb950; display: inline-block; }
+  .ok-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); display: inline-block; }
   .probhead { margin-bottom: 6px; }
-  .prow { padding: 4px 0; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+  .prow { padding: 4px 0; border-top: 1px solid var(--line-soft); }
   .ptitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .pmeta { font-size: 0.85em; }
+  .pmeta { font-size: var(--fs-xs); }
 </style>
