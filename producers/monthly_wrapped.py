@@ -48,6 +48,16 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import brain_contracts as bc
 
 CLAUDE = r"C:\Users\bobdo\.local\bin\claude.exe"
+# Phase 1a hook (2026-09-02): export the long-lived subscription token when wg\claude-oauth.token exists, so this
+# scheduled run does not depend on the 8h session token (401 every morning otherwise). No-op until the file exists.
+_TOKEN_FILE = r"C:\Users\bobdo\wg\claude-oauth.token"
+try:
+    if os.path.isfile(_TOKEN_FILE):
+        _tok = open(_TOKEN_FILE, encoding="utf-8-sig").read().strip()
+        if _tok:
+            os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = _tok
+except Exception:
+    pass
 LOCK = os.path.join(tempfile.gettempdir(), "brain-wrapped-claude.lock")
 LOCK_STALE_S = 420          # > the call timeout, so a crashed run's lock always clears itself
 CALL_TIMEOUT_S = 180
@@ -299,18 +309,35 @@ def call_claude(prompt):
     """Run exactly one claude -p call and return the narrative text. Raises RuntimeError with an honest reason."""
     if not os.path.isfile(CLAUDE):
         raise RuntimeError("claude binary not found at %s" % CLAUDE)
-    try:
-        proc = subprocess.run([CLAUDE, "-p", "--max-turns", "1", "--output-format", "json"],
-                              input=prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                              encoding="utf-8", errors="replace", timeout=CALL_TIMEOUT_S, cwd=bc.BRAIN)
-    except subprocess.TimeoutExpired:
-        raise RuntimeError("claude timed out after %ds" % CALL_TIMEOUT_S)
-    if proc.returncode != 0:
-        raise RuntimeError("claude exited %d: %s" % (proc.returncode, (proc.stderr or "").strip()[:300]))
-    try:
-        env = json.loads(proc.stdout)
-    except Exception as ex:
-        raise RuntimeError("claude output was not JSON (%s): %s" % (ex, (proc.stdout or "")[:200]))
+    env = None
+    for attempt in (1, 2, 3):
+        try:
+            # --strict-mcp-config + empty config: no user/plugin MCP servers for a headless call (2026-09-03: one
+            # printed a warning line ahead of the JSON envelope on stdout)
+            proc = subprocess.run([CLAUDE, "-p", "--max-turns", "1", "--output-format", "json",
+                                   "--strict-mcp-config", "--mcp-config", r"C:\Users\bobdo\wg\audit\mcp-none.json"],
+                                  input=prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                  encoding="utf-8", errors="replace", timeout=CALL_TIMEOUT_S, cwd=bc.BRAIN)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError("claude timed out after %ds" % CALL_TIMEOUT_S)
+        if proc.returncode != 0:
+            raise RuntimeError("claude exited %d: %s" % (proc.returncode, (proc.stderr or "").strip()[:300]))
+        try:
+            # keep only the envelope line (last line starting with '{') so a stray warning line cannot break the parse
+            _lines = [ln for ln in (proc.stdout or "").splitlines() if ln.lstrip().startswith("{")]
+            env = json.loads(_lines[-1] if _lines else proc.stdout)
+        except Exception as ex:
+            raise RuntimeError("claude output was not JSON (%s): %s" % (ex, (proc.stdout or "")[:200]))
+        st = env.get("api_error_status") or 0
+        if attempt < 3 and (st == 429 or st >= 500):   # transient (529 Overloaded etc.): two more tries, 60s apart
+            import time as _time
+            _time.sleep(60)
+            continue
+        if st == 401 and attempt == 1:   # session token may refresh on the second call
+            import time as _time
+            _time.sleep(30)
+            continue
+        break
     # Envelope shape (verified 2026-08-14): {"type":"result","subtype":"success","is_error":false,
     #   "result":"<text>","session_id":..,"num_turns":..,"usage":{..},"total_cost_usd":..}
     if env.get("is_error") or env.get("subtype") != "success":

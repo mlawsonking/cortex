@@ -16,6 +16,10 @@ BASE = "http://127.0.0.1:8080"
 PRIVATE = ("torrentleech", "tleechreload", "iptorrents", "torrentday", "td.jumbohostpro", "sync.td-peers",
            "async.empirehost", "ssl.empirehost", "cow.milkie", "immortalseed", "datascene", "stackoverflow.tech")
 NEVER_BPS = 128.0            # below ~128 B/s average upload, "never at the current rate" is the honest label
+TIME_GOAL_S = 400 * 3600     # the house H&R bar is ratio >= 1.0 OR >= 400h seeded (private-tracker-hnr-policy,
+                             # same bar the Seed Janitor enforces). 2026-10-26: time-satisfied torrents used to
+                             # show as "problems" after qBit's 90d stop (2160h seeded!) - obligation met is not
+                             # a problem, so they are out of below-goal entirely.
 
 
 def main():
@@ -42,6 +46,8 @@ def main():
         if ratio >= 1.0:
             continue
         st = t.get("seeding_time") or 0
+        if st >= TIME_GOAL_S:            # obligation met on the time leg - not below goal
+            continue
         up = t.get("uploaded") or 0
         remaining = dl * 1.0 - up
         vel = (up / st) if st > 600 else 0.0        # need >10min of seed history to call it a velocity

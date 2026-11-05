@@ -14,7 +14,9 @@
       "source": null,
       "client": true,
       "schema": "services.schema.json",
-      "consumers": ["Services card"]
+      "consumers": [
+        "Services card"
+      ]
     },
     "storage": {
       "version": "1.1.0",
@@ -24,7 +26,11 @@
       "source": null,
       "client": true,
       "schema": "storage.schema.json",
-      "consumers": ["Storage card", "Parity card", "I10 Cost of Quality"]
+      "consumers": [
+        "Storage card",
+        "Parity card",
+        "I10 Cost of Quality"
+      ]
     },
     "pipeline": {
       "version": "1.0.0",
@@ -34,7 +40,9 @@
       "source": null,
       "client": true,
       "schema": "pipeline.schema.json",
-      "consumers": ["Download pipeline card"]
+      "consumers": [
+        "Download pipeline card"
+      ]
     },
     "hnr": {
       "version": "1.0.0",
@@ -44,7 +52,10 @@
       "source": null,
       "client": true,
       "schema": "hnr.schema.json",
-      "consumers": ["H&R Sentinel card", "I4 H&R Horizon"]
+      "consumers": [
+        "H&R Sentinel card",
+        "I4 H&R Horizon"
+      ]
     },
     "library-stats": {
       "version": "1.0.0",
@@ -54,7 +65,9 @@
       "source": null,
       "client": true,
       "schema": "library-stats.schema.json",
-      "consumers": ["Library card"]
+      "consumers": [
+        "Library card"
+      ]
     },
     "plex-now": {
       "version": "1.0.0",
@@ -64,7 +77,11 @@
       "source": null,
       "client": true,
       "schema": "plex-now.schema.json",
-      "consumers": ["Now playing card", "Recently added shelf", "household status page"]
+      "consumers": [
+        "Now playing card",
+        "Recently added shelf",
+        "household status page"
+      ]
     },
     "calendar": {
       "version": "1.1.0",
@@ -74,7 +91,9 @@
       "source": null,
       "client": true,
       "schema": "calendar.schema.json",
-      "consumers": ["Release calendar card"]
+      "consumers": [
+        "Release calendar card"
+      ]
     },
     "activity": {
       "version": "1.0.0",
@@ -84,7 +103,10 @@
       "source": null,
       "client": true,
       "schema": "activity.schema.json",
-      "consumers": ["Activity card", "I8 Anomaly Feed"]
+      "consumers": [
+        "Activity card",
+        "I8 Anomaly Feed"
+      ]
     },
     "health": {
       "version": "1.0.0",
@@ -94,7 +116,9 @@
       "source": null,
       "client": true,
       "schema": "health.schema.json",
-      "consumers": ["Protection & Health card"]
+      "consumers": [
+        "Protection & Health card"
+      ]
     },
     "security": {
       "version": "1.0.0",
@@ -104,7 +128,9 @@
       "source": "wg\\dashboard\\security.json",
       "client": true,
       "schema": "security.schema.json",
-      "consumers": ["Security posture card"]
+      "consumers": [
+        "Security posture card"
+      ]
     },
     "smart": {
       "version": "1.0.0",
@@ -114,7 +140,10 @@
       "source": "wg\\dashboard\\smart.json",
       "client": true,
       "schema": "smart.schema.json",
-      "consumers": ["Drives card", "Protection & Health card"]
+      "consumers": [
+        "Drives card",
+        "Protection & Health card"
+      ]
     },
     "ledger": {
       "version": "1.0.0",
@@ -124,7 +153,9 @@
       "source": null,
       "client": true,
       "schema": "ledger.schema.json",
-      "consumers": ["I2 Compression Ledger card"]
+      "consumers": [
+        "I2 Compression Ledger card"
+      ]
     },
     "hnr-horizon": {
       "version": "1.1.0",
@@ -134,7 +165,9 @@
       "source": null,
       "client": true,
       "schema": "hnr-horizon.schema.json",
-      "consumers": ["I4 H&R Horizon card"]
+      "consumers": [
+        "I4 H&R Horizon card"
+      ]
     },
     "rhythm": {
       "version": "1.0.0",
@@ -144,7 +177,10 @@
       "source": null,
       "client": true,
       "schema": "rhythm.schema.json",
-      "consumers": ["I1 Rhythm Map card", "schedule-aware Tonight's Pick (later engine pass)"]
+      "consumers": [
+        "I1 Rhythm Map card",
+        "schedule-aware Tonight's Pick (later engine pass)"
+      ]
     },
     "dead-shelf": {
       "version": "1.0.0",
@@ -164,7 +200,9 @@
       "source": null,
       "client": true,
       "schema": "couple-compat.schema.json",
-      "consumers": ["I5 Couple Compatibility card"]
+      "consumers": [
+        "I5 Couple Compatibility card"
+      ]
     },
     "gap-radar": {
       "version": "1.0.0",
@@ -174,7 +212,9 @@
       "source": null,
       "client": true,
       "schema": "gap-radar.schema.json",
-      "consumers": ["I6 Gap Radar card"]
+      "consumers": [
+        "I6 Gap Radar card"
+      ]
     },
     "taste-velocity": {
       "version": "1.0.0",
@@ -184,7 +224,9 @@
       "source": null,
       "client": true,
       "schema": "taste-velocity.schema.json",
-      "consumers": ["I7 Taste Velocity card"]
+      "consumers": [
+        "I7 Taste Velocity card"
+      ]
     },
     "anomaly-feed": {
       "version": "1.0.0",
@@ -194,7 +236,9 @@
       "source": null,
       "client": true,
       "schema": "anomaly-feed.schema.json",
-      "consumers": ["I8 Anomaly Feed card"]
+      "consumers": [
+        "I8 Anomaly Feed card"
+      ]
     },
     "wrapped": {
       "version": "1.0.0",
@@ -204,7 +248,9 @@
       "source": null,
       "client": true,
       "schema": "wrapped.schema.json",
-      "consumers": ["I9 Monthly Wrapped card"]
+      "consumers": [
+        "I9 Monthly Wrapped card"
+      ]
     },
     "cost-of-quality": {
       "version": "1.0.0",
@@ -214,7 +260,9 @@
       "source": null,
       "client": true,
       "schema": "cost-of-quality.schema.json",
-      "consumers": ["I10 Cost of Quality card"]
+      "consumers": [
+        "I10 Cost of Quality card"
+      ]
     },
     "tonight-pick": {
       "version": "1.3.0",
@@ -224,7 +272,10 @@
       "source": "wg\\brain\\data\\missed-gems.json",
       "client": true,
       "schema": "tonight-pick.schema.json",
-      "consumers": ["Tonight's Pick hero", "I1 Rhythm-aware scheduling"]
+      "consumers": [
+        "Tonight's Pick hero",
+        "I1 Rhythm-aware scheduling"
+      ]
     },
     "taste": {
       "version": "1.0.0",
@@ -234,7 +285,10 @@
       "source": "wg\\audit\\trakt-ratings.json",
       "client": true,
       "schema": "taste.schema.json",
-      "consumers": ["Taste page", "I7 Taste Velocity"]
+      "consumers": [
+        "Taste page",
+        "I7 Taste Velocity"
+      ]
     },
     "recs": {
       "version": "1.0.0",
@@ -244,7 +298,11 @@
       "source": "wg\\audit\\personal-recs.json",
       "client": true,
       "schema": "recs.schema.json",
-      "consumers": ["Recommended card", "Tonight's Pick pool", "picks page"]
+      "consumers": [
+        "Recommended card",
+        "Tonight's Pick pool",
+        "picks page"
+      ]
     },
     "oracle": {
       "version": "1.0.0",
@@ -254,7 +312,11 @@
       "source": "wg\\dashboard\\oracle.json",
       "client": true,
       "schema": "oracle.schema.json",
-      "consumers": ["Oracle card", "HEVC reclaim list", "I9 Monthly Wrapped"]
+      "consumers": [
+        "Oracle card",
+        "HEVC reclaim list",
+        "I9 Monthly Wrapped"
+      ]
     },
     "library-index": {
       "version": "1.0.0",
@@ -264,7 +326,12 @@
       "source": "wg\\audit\\library-index.json",
       "client": false,
       "schema": "library-index.schema.json",
-      "consumers": ["I2 Compression Ledger", "I3 Dead Shelf", "I6 Gap Radar", "nl-search/mood runners"]
+      "consumers": [
+        "I2 Compression Ledger",
+        "I3 Dead Shelf",
+        "I6 Gap Radar",
+        "nl-search/mood runners"
+      ]
     },
     "taste-graph": {
       "version": "1.0.0",
@@ -274,7 +341,10 @@
       "source": "wg\\audit\\taste-graph.json",
       "client": true,
       "schema": "taste-graph.schema.json",
-      "consumers": ["I5 Couple Compatibility", "I7 Taste Velocity"]
+      "consumers": [
+        "I5 Couple Compatibility",
+        "I7 Taste Velocity"
+      ]
     },
     "unwatched-pool": {
       "version": "1.1.0",
@@ -284,7 +354,10 @@
       "source": "wg\\audit\\unwatched-pool.json",
       "client": false,
       "schema": "unwatched-pool.schema.json",
-      "consumers": ["I3 Dead Shelf", "I5 Couple Compatibility"]
+      "consumers": [
+        "I3 Dead Shelf",
+        "I5 Couple Compatibility"
+      ]
     },
     "upgrades": {
       "version": "1.0.0",
@@ -294,7 +367,9 @@
       "source": "wg\\dashboard\\upgrade-proposals.json",
       "client": true,
       "schema": "upgrades.schema.json",
-      "consumers": ["4K upgrade advisor card"]
+      "consumers": [
+        "4K upgrade advisor card"
+      ]
     },
     "passport": {
       "version": "1.1.0",
@@ -304,7 +379,10 @@
       "source": "wg\\dashboard\\passport.json",
       "client": true,
       "schema": "passport.schema.json",
-      "consumers": ["Auteur passport card", "I6 Gap Radar"]
+      "consumers": [
+        "Auteur passport card",
+        "I6 Gap Radar"
+      ]
     },
     "streaming-best": {
       "version": "1.0.0",
@@ -314,7 +392,10 @@
       "source": null,
       "client": true,
       "schema": "streaming-best.schema.json",
-      "consumers": ["#/streaming page", "add-movie / add-series verbs (server-side allow-list)"]
+      "consumers": [
+        "#/streaming page",
+        "add-movie / add-series verbs (server-side allow-list)"
+      ]
     },
     "missed-gems": {
       "version": "1.1.0",
@@ -324,7 +405,9 @@
       "source": null,
       "client": true,
       "schema": "missed-gems.schema.json",
-      "consumers": ["#/missed page"]
+      "consumers": [
+        "#/missed page"
+      ]
     },
     "taste-ledger": {
       "version": "1.0.0",
@@ -334,7 +417,11 @@
       "source": null,
       "client": true,
       "schema": "taste-ledger.schema.json",
-      "consumers": ["#/rate page", "Streaming Best + Missed Gems thumb state", "Rate card"]
+      "consumers": [
+        "#/rate page",
+        "Streaming Best + Missed Gems thumb state",
+        "Rate card"
+      ]
     },
     "rate-queue": {
       "version": "1.0.0",
@@ -344,7 +431,40 @@
       "source": null,
       "client": true,
       "schema": "rate-queue.schema.json",
-      "consumers": ["Rate card", "#/rate page", "rate-title verb (server-side allow-list)", "weekly digest"]
+      "consumers": [
+        "Rate card",
+        "#/rate page",
+        "rate-title verb (server-side allow-list)",
+        "weekly digest"
+      ]
+    },
+    "kids-shelf": {
+      "version": "1.0.0",
+      "producer": "brain\\producers\\kids_shelf.py (task Cortex kids-shelf, weekly Sun 04:30; deterministic, no model call; also the /roku/play allow-list)",
+      "cadence": "weekly",
+      "slo_seconds": 777600,
+      "source": null,
+      "client": true,
+      "schema": "kids-shelf.schema.json",
+      "consumers": [
+        "Spin to Watch Roku channel",
+        "/wheel/ PWA",
+        "POST /roku/play (server-side allow-list, roku_play.py)"
+      ]
+    },
+    "spin-health": {
+      "version": "1.0.0",
+      "producer": "wg\\spin-watchdog.py (task Spin Watchdog, daily 05:10, root folder; self-repair: reinstall dev channel, refresh stale shelf; change-gated alerts via run-spin-watchdog.ps1 -> Send-Tiered)",
+      "cadence": "daily",
+      "slo_seconds": 129600,
+      "source": null,
+      "client": true,
+      "schema": "spin-health.schema.json",
+      "consumers": [
+        "/wheel/health page",
+        "daily audit row (task LastRunResult)",
+        "Spin to Watch options screen"
+      ]
     }
   }
 }

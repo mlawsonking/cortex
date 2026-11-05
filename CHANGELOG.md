@@ -84,6 +84,18 @@ Sonarr path dry-run with POST intercepted (correct body; verify-by-effect refuse
 4c7fdfc76c91 leak-grep PASS; verify-brain 5/5 PASS exit 0; both pages render desktop + 375px, zero console errors;
 tasks run rc 0 (Streaming Best self-gated skip, Missed Gems regenerated).
 
+## [hnr-horizon] 2026-10-26 - Below-goal now honors BOTH legs of the house H&R bar
+
+**Fixed - the Horizon card reported time-satisfied seeds as "problems."** The producer skipped only
+`ratio >= 1.0`, so every torrent qBit legitimately stopped at its 90-day limit (2,160h seeded - five times the
+400h house bar) still counted as below goal, and because stoppedUP is outside SEEDING_OK it ALSO landed in the
+problems exceptions list. The card showed "25 under-ratio torrents NOT seeding properly" when every one of them
+had its obligation met on the time leg; Monthly Wrapped inherited the same inflation ("1,057 below goal owing
+5,272 GB"). hnr_horizon.py now skips `seeding_time >= 400h` at the same gate as the ratio check (TIME_GOAL_S,
+matching private-tracker-hnr-policy and the Seed Janitor's bar). Honest numbers after the fix: 78 below goal,
+490 GB remaining, 39 never-at-current-rate, **0 problems** - and all 78 are actively seeding. Wrapped picks up
+the corrected totals at its next monthly run.
+
 ## [passport 1.1.0] 2026-08-16 - Curated filmography id repair + the 1987 floor moves where it was claimed to be
 
 **Fixed - the Auteur passport card was scoring other films' ownership.** The curated `$FILMOGRAPHY` table in

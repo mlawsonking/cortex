@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "spin-health",
+  "description": "Spin to Watch self-repair + health, written daily by wg\\spin-watchdog.py (task Spin Watchdog). One row per configured Roku: found by serial, ECP state, dev channel present/version vs the newest dist zip, what the watchdog did about it (installed/updated/install_failed), channel heartbeat (POST /roku/event) and today's server-side play outcomes, plus the deep-link form each TV learned. overall: ok | info (self-healed or TV simply off) | degraded (a human is needed) | broken (no TV can play / no shelf). alert is the change-gated alert this run emitted, or null. Read-only contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["overall", "summary", "rokus", "shelf", "recent", "alert"],
+  "properties": {
+    "overall": {"enum": ["ok", "info", "degraded", "broken"]},
+    "summary": {"type": "string", "maxLength": 300},
+    "rokus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "serial", "status", "level", "action", "ecp", "dev", "detail"],
+        "properties": {
+          "name": {"type": "string"},
+          "serial": {"type": "string", "pattern": "^[0-9A-Z]{4,32}$"},
+          "ip": {"type": ["string", "null"]},
+          "found": {"type": ["string", "null"]},
+          "ecp": {"enum": ["ok", "limited", "error", "unreachable", "unknown"]},
+          "dev": {"type": "object"},
+          "action": {"enum": ["none", "installed", "updated", "install_failed", "skipped"]},
+          "status": {"type": "string"},
+          "level": {"enum": ["ok", "info", "degraded", "broken"]},
+          "detail": {"type": "string"},
+          "heartbeat": {"type": "object"},
+          "today": {"type": ["object", "null"]},
+          "handoff": {"type": "object"}
+        }
+      }
+    },
+    "shelf": {
+      "type": "object",
+      "required": ["count", "status", "action", "level"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "status": {"enum": ["ok", "stale", "missing", "refreshed"]},
+        "action": {"enum": ["none", "refreshed", "refresh_failed"]},
+        "level": {"enum": ["ok", "info", "degraded", "broken"]}
+      }
+    },
+    "recent": {"type": "array"},
+    "alert": {"type": ["object", "null"]}
+  }
+}

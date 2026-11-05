@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "kids-shelf",
+  "description": "Spin to Watch: the kid-safe movie shelf. FILTER_VERSION 2 (2026-11-04): default rule 'cartoons' = genre Animation AND (G/PG/TV-Y/TV-Y7/TV-Y7-FV/TV-G, or unrated Family/Children) AND NOT unrated Anime, genres completed from the Plex genre index (section listings truncate to 2 tags); rule 'broad' = the Round 1 rule (G/PG/TV-Y..TV-PG or Animation/Family with no adult rating). A spin-curation.json allow-list admits listed ratingKeys regardless of the rule. Weekly, deterministic, no model call. This is the payload under the house {_meta, data} envelope. It is ALSO the server-side allow-list for POST /roku/play: only a ratingKey in the CURRENT contract can be played, only to an allow-listed Roku serial. thumb/art are Plex-relative paths, resolved by clients through the Cortex /photo proxy; no credential and no absolute URL ever appears here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source",
+    "filter",
+    "counts",
+    "content_hash",
+    "items"
+  ],
+  "properties": {
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "filter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "ratings",
+        "genres",
+        "adult"
+      ],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ratings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genres": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "adult": {
+          "type": "string"
+        },
+        "rule": {
+          "type": "string",
+          "enum": [
+            "cartoons",
+            "broad"
+          ]
+        },
+        "unrated_ok_genres": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kids_shelf",
+        "scanned",
+        "by_rule_rating",
+        "by_rule_genre",
+        "excluded",
+        "duplicates"
+      ],
+      "properties": {
+        "kids_shelf": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scanned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_rule_rating": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_rule_genre": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excluded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_rule_cartoon": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_rule_allow": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ratingKey",
+          "guid",
+          "title",
+          "year",
+          "contentRating",
+          "genres",
+          "durationMin",
+          "thumb",
+          "art",
+          "studio",
+          "summary",
+          "addedAt",
+          "viewCount",
+          "lastViewedAt",
+          "videoResolution",
+          "videoCodec",
+          "audioCodec"
+        ],
+        "properties": {
+          "ratingKey": {
+            "type": "string",
+            "pattern": "^[0-9A-Za-z_-]{1,32}$"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "contentRating": {
+            "type": "string"
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "durationMin": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "thumb": {
+            "type": "string",
+            "pattern": "^(/(library|photo)/[\\w:/\\-.]+)?$"
+          },
+          "art": {
+            "type": "string",
+            "pattern": "^(/(library|photo)/[\\w:/\\-.]+)?$"
+          },
+          "studio": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "addedAt": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "viewCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lastViewedAt": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "videoResolution": {
+            "type": "string"
+          },
+          "videoCodec": {
+            "type": "string"
+          },
+          "audioCodec": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
