@@ -114,6 +114,7 @@
       <a href="#/missed" class:on={route === 'missed'} aria-current={route === 'missed' ? 'page' : undefined}>Missed Gems</a>
       <a href="#/rate" class:on={route === 'rate'} aria-current={route === 'rate' ? 'page' : undefined}>Rate{#if rateQueue.data?.backlog?.high_leverage}<span class="nav-badge"
          title="high-leverage titles waiting for your rating">{rateQueue.data.backlog.high_leverage}</span>{/if}</a>
+      <a href="/family/">Family</a>
       <a href="/legacy/" class="legacy">legacy &rarr;</a>
     </nav>
   </div>
